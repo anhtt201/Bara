@@ -186,6 +186,9 @@ export class ProductListComponent implements OnInit, AfterViewInit {
             .updateProduct(currentPro.productId, currentPro)
             .subscribe((data) => {
               console.log(data);
+        console.log(this.product);
+        this.productList.push(data);
+        this.table.totalRecords++;
             });
 
           this.toastrService.success('Updated succesfully', 'Succesfully');
