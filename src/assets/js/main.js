@@ -437,6 +437,19 @@
             },
         }); 
     })
+
+    $('#exampleModal1').on('shown.bs.modal', function () {
+        var productDetailsBig1 = new Swiper('.product-details-big-img-slider', {
+            autoplay: false,
+            delay: 5000,
+            slidesPerView: 1,
+            loop: false,
+            navigation: {
+                nextEl: '.product-details-next',
+                prevEl: '.product-details-prev',
+            },
+        }); 
+    })
     
     /*--------------------------------------
 		Product details small img slider

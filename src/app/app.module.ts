@@ -43,10 +43,16 @@ import { DialogModule } from 'primeng/dialog';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ToolbarModule } from 'primeng/toolbar';
 import { FileUploadModule } from 'primeng/fileupload';
-import {InputNumberModule} from 'primeng/inputnumber';
-import {CalendarModule} from 'primeng/calendar';
-import {MultiSelectModule} from 'primeng/multiselect';
-import {DropdownModule} from 'primeng/dropdown';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { CalendarModule } from 'primeng/calendar';
+import { MultiSelectModule } from 'primeng/multiselect';
+import { DropdownModule } from 'primeng/dropdown';
+import { NgxStarsModule } from 'ngx-stars';
+import { CheckoutComponent } from './FrontEnd/checkout/checkout.component';
+import { ProductNameDirective } from './Directive/product-name.directive';
+import { ProductLengthDirective } from './Directive/product-length.directive';
+import { NgxSliderModule } from '@angular-slider/ngx-slider';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 @NgModule({
   declarations: [
@@ -75,6 +81,9 @@ import {DropdownModule} from 'primeng/dropdown';
     ProductUpdateComponent,
     CartComponent,
     ProductDetailComponent,
+    CheckoutComponent,
+    ProductNameDirective,
+    ProductLengthDirective,
   ],
   imports: [
     CommonModule,
@@ -102,6 +111,9 @@ import {DropdownModule} from 'primeng/dropdown';
     CalendarModule,
     MultiSelectModule,
     DropdownModule,
+    NgxStarsModule,
+    NgxSliderModule,
+    NgxPaginationModule
   ],
   providers: [
     ToastrService,

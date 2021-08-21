@@ -22,6 +22,7 @@ export class LoginComponent implements OnInit {
   isLoginFailed: boolean = false;
   isAdmin: boolean = false;
   isUser: boolean = true;
+  rememberMe: boolean = false;
 
   username!: string;
   userRoles!: string;
@@ -34,7 +35,7 @@ export class LoginComponent implements OnInit {
 
   id!: number;
   frmUserUp!: FormGroup;
-  user: User = new User(0, '', '', '', '', [], '', '', 0, new Date(), false);
+  user: User = new User(0, '', '', '', '', [], '', '', 0, '', false);
   constructor(
     private authService: AuthService,
     private router: Router,
@@ -46,14 +47,6 @@ export class LoginComponent implements OnInit {
     this.initLoginForm();
     this.authService.getUserById(this.id).subscribe((data) => {
       this.user = data;
-      // this.id = this.user.id;
-      // this.username = this.user.username;
-      // this.email = this.user.email;
-      // this.phone = this.user.phone;
-      // this.address = this.user.address;
-      // this.avatar = this.user.avatar;
-      // this.balance = this.user.balance;
-      // this.dob = this.user.dob;
       this.frmUserUp.get('id')!.setValue(this.user.id);
       this.frmUserUp.get('username')!.setValue(this.user.username);
       this.frmUserUp.get('email')!.setValue(this.user.email);
@@ -62,6 +55,7 @@ export class LoginComponent implements OnInit {
       this.frmUserUp.get('avatar')!.setValue(this.user.avatar);
       this.frmUserUp.get('balance')!.setValue(this.user.balance);
       this.frmUserUp.get('dob')!.setValue(this.user.dob);
+      console.log(this.user.address);
     });
     this.initFormUp();
   }
@@ -96,31 +90,79 @@ export class LoginComponent implements OnInit {
 
   onSubmit() {
     this.submitted = true;
-    this.authService
-      .login(this.loginForm.value.username, this.loginForm.value.password)
-      .subscribe(
-        (data) => {
-          this.isLogin = true;
-          this.id = data.id;
-          console.log(this.id);
-          this.router.navigate(['/home']);
-        },
-        (error) => {
-          console.log(error);
-          this.errorMessage = error;
-          this.isLogin = false;
-          this.isLoginFailed = true;
-        }
-      );
+
+    if (!this.rememberMe) {
+      this.authService
+        .loginNoSave(
+          this.loginForm.value.username,
+          this.loginForm.value.password
+        )
+        .subscribe(
+          (data) => {
+            this.isLogin = true;
+            this.id = data.id;
+            console.log(this.id);
+            this.router.navigate(['/home']);
+          },
+          (error) => {
+            console.log(error);
+            this.errorMessage = error;
+            this.isLogin = false;
+            this.isLoginFailed = true;
+          }
+        );
+    } else {
+      this.authService
+        .loginSave(
+          this.loginForm.value.username,
+          this.loginForm.value.password
+        )
+        .subscribe(
+          (data) => {
+            this.isLogin = true;
+            this.id = data.id;
+            console.log(this.id);
+            this.router.navigate(['/home']);
+          },
+          (error) => {
+            console.log(error);
+            this.errorMessage = error;
+            this.isLogin = false;
+            this.isLoginFailed = true;
+          }
+        );
+    }
   }
 
   updateUser() {
+    if (!this.rememberMe){
+      this.sesionGet();
+    } else {
+      this.localGet();
+    }
+  }
+
+  loggedIn() {
+    return this.authService.isLoggedIn();
+  }
+
+  isChecked(event: any) {
+    if (event.target.checked) {
+      this.rememberMe = true;
+      console.log('HELLO');
+    } else {
+      this.rememberMe = false;
+      console.log('NGU');
+    }
+  }
+
+  sesionGet(){
     let user = this.frmUserUp.value;
     this.authService.updateUser(user.id, user).subscribe((data) => {
       console.log(data);
       sessionStorage.setItem('username', user.username);
-      sessionStorage.setItem('token', user);
-      sessionStorage.setItem('roles', JSON.stringify(user.roles));
+      // sessionStorage.setItem('token', user);
+      // sessionStorage.setItem('roles', JSON.stringify(user.roles));
       sessionStorage.setItem('email', user.email);
       sessionStorage.setItem('phone', user.phone);
       sessionStorage.setItem('address', user.address);
@@ -133,7 +175,22 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  loggedIn() {
-    return this.authService.isLoggedIn();
+  localGet(){
+    let user = this.frmUserUp.value;
+    this.authService.updateUser(user.id, user).subscribe((data) => {
+      console.log(data);
+      localStorage.setItem('username', user.username);
+      // sessionStorage.setItem('token', user);
+      // sessionStorage.setItem('roles', JSON.stringify(user.roles));
+      localStorage.setItem('email', user.email);
+      localStorage.setItem('phone', user.phone);
+      localStorage.setItem('address', user.address);
+      localStorage.setItem('avatar', user.avatar);
+      localStorage.setItem('balance', user.balance);
+      localStorage.setItem('dob', user.dob);
+      localStorage.setItem('status', user.status);
+      this.initLoginForm();
+      window.location.reload();
+    });
   }
 }

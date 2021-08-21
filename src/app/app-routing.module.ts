@@ -24,6 +24,7 @@ import { ProductUpdateComponent } from './BackEnd/product-update/product-update.
 import { CartComponent } from './FrontEnd/cart/cart.component';
 import { CommonModule } from '@angular/common';
 import { ProductDetailComponent } from './FrontEnd/product-detail/product-detail.component';
+import { CheckoutComponent } from './FrontEnd/checkout/checkout.component';
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -33,6 +34,7 @@ const routes: Routes = [
   { path: 'shop', component: ProductComponent },
   { path: 'product/:id', component: ProductDetailComponent },
   { path: 'cart', component: CartComponent },
+  { path: 'checkout', component: CheckoutComponent },
   { path: 'blog', component: BlogComponent },
   { path: 'about', component: AboutComponent },
   { path: 'contact', component: ContactComponent },
@@ -54,7 +56,11 @@ const routes: Routes = [
 
 @NgModule({
   imports: [
-    RouterModule.forRoot(routes, { scrollPositionRestoration: 'enabled' }),
+    RouterModule.forRoot(routes, {
+      scrollPositionRestoration: 'enabled',
+      useHash: true,
+      anchorScrolling: 'enabled',
+    }),
   ],
   exports: [RouterModule, CommonModule],
 })

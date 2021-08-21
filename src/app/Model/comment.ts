@@ -5,7 +5,7 @@ export class Comment {
   commentId!: number;
   commentContent!: String;
   createdDay!: String;
-  commentRate!: number;
+  commentRate!: number[];
   commentStatus!: boolean;
   product!: Product;
   user!: User;
@@ -13,7 +13,7 @@ export class Comment {
   constructor(
     commentContent: String,
     createdDay: String,
-    commentRate: number,
+    commentRate: number[],
     commentStatus: boolean
   ) {
     this.commentContent = commentContent;

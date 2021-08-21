@@ -17,6 +17,9 @@ import { LazyLoadScriptService } from 'src/app/Service/lazy-load.service';
 import { ProductService } from 'src/app/Service/product.service';
 import * as moment from 'moment';
 import { DatePipe } from '@angular/common';
+import { AuthService } from 'src/app/Service/auth.service';
+import { ToastrService } from 'ngx-toastr';
+import { User } from 'src/app/Model/user';
 
 @Component({
   selector: 'app-product-detail',
@@ -25,6 +28,8 @@ import { DatePipe } from '@angular/common';
 })
 export class ProductDetailComponent implements OnInit, AfterViewInit {
   @ViewChild('userInput') input!: ElementRef;
+
+  baseUrl = 'http://localhost:8080/api/fileManager/downloadFile/';
 
   productDetail!: Product;
   productCatalog!: Catalog;
@@ -40,7 +45,9 @@ export class ProductDetailComponent implements OnInit, AfterViewInit {
     private productService: ProductService,
     private activatedRoute: ActivatedRoute,
     private commentService: CommentService,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
+    private authService: AuthService,
+    private toastr: ToastrService
   ) {
     this.productId = this.activatedRoute.snapshot.params['id'];
     this.userId = parseInt(sessionStorage.getItem('id')!);
@@ -55,11 +62,18 @@ export class ProductDetailComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.productService.getProductById(this.productId).subscribe((data) => {
+      data.productImgIds = [];
+      data.productImgs = data.productImg.split(';');
+      data.productImgs.forEach((e) => {
+        console.log(e.substring(this.baseUrl.length));
+        data.productImgIds.push(parseInt(e.substring(this.baseUrl.length)));
+      });
       this.productDetail = data;
       this.productCatalog = data.catalog;
       this.productBrand = data.brand;
       this.productSize = data.sizes;
       this.productColor = data.colors;
+      console.log(this.productDetail);
       console.log(this.productCatalog);
       console.log(this.productBrand);
       console.log(this.productSize);
@@ -73,19 +87,37 @@ export class ProductDetailComponent implements OnInit, AfterViewInit {
       });
   }
 
+  loggedIn() {
+    return this.authService.isLoggedIn();
+  }
+
   postComment(content: String) {
-    let date = moment().format('DD-MM-YYYY');
-    console.log(date);
-    console.log(content);
-    let comment: Comment = new Comment(content, date, 4, true);
     // if(event.keydown === 13){}
-    this.commentService
-      .postUserComment(comment, this.productId, this.userId)
-      .subscribe((data) => {
-        this.productComment.push(data);
-        this.commentService.allComment.next(this.productComment);
-        console.log(data);
-      });
-    this.input.nativeElement.value = '';
+    if (this.loggedIn()) {
+      this.rateCounter = Array(this.ratingDisplay).fill(this.ratingDisplay);
+      let date = moment().format('DD-MM-YYYY');
+      console.log(date);
+      console.log(content);
+      let comment: Comment = new Comment(content, date, this.rateCounter, true);
+      this.commentService
+        .postUserComment(comment, this.productId, this.userId)
+        .subscribe((data) => {
+          this.productComment.push(data);
+          this.commentService.allComment.next(this.productComment);
+          console.log(data);
+        });
+      this.toastr.success('Comment succesfully', 'Succesfully');
+      this.input.nativeElement.value = '';
+    } else {
+      this.toastr.error('You need to login first!', 'Failed');
+    }
+  }
+
+  ratingDisplay!: number;
+  rateCounter!: any;
+
+  onRatingSet(rating: number): void {
+    this.ratingDisplay = rating;
+    console.log(this.ratingDisplay);
   }
 }

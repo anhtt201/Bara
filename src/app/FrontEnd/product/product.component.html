@@ -92,11 +92,12 @@
                     <div class="tab-content">
                         <div id="pro-1" class="tab-pane active product-responsive-style">
                             <div class="row">
-                                <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6 col-12" *ngFor="let p of filterPro">
-                                    <div class="product-wrap mb-35">
+                                <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6 col-12"
+                                    *ngFor="let p of filterPro | paginate: config1">
+                                    <div class=" product-wrap mb-35">
                                         <div class="product-img-2 mb-25">
                                             <a [routerLink]="['/product', p.productId]">
-                                                <img src="{{p.productImg}}" alt="">
+                                                <img src="{{p.productImgs[0]}}" alt="">
                                             </a>
                                             <div class="product-action-2 tooltip-style tooltip-style-modify">
                                                 <a routerLink="/product" aria-label="Select options"><i
@@ -104,8 +105,7 @@
                                                 <button aria-label="Add To Wishlist"><i
                                                         class="ion-ios-heart"></i></button>
                                                 <a aria-label="Quick View" data-bs-toggle="modal"
-                                                    href="{{'#hello1'+ p.productId}}"><i
-                                                        class="ion-ios-eye-outline"></i></a>
+                                                    href="#exampleModal"><i class="ion-ios-eye-outline"></i></a>
                                                 <button aria-label="Compare"><i class="ion-stats-bars"></i></button>
                                             </div>
                                         </div>
@@ -117,9 +117,9 @@
                                             </div>
                                         </div>
                                     </div>
+
                                     <!-- Product Modal start -->
-                                    <div class="modal modal-style" [id]="'hello1'+ p.productId" tabindex="-1"
-                                        role="dialog">
+                                    <div class="modal modal-style" id="exampleModal" tabindex="-1" role="dialog">
                                         <div class="modal-overlay">
                                             <div class="modal-dialog" role="document">
                                                 <div class="modal-content">
@@ -134,30 +134,10 @@
                                                                     <div
                                                                         class="swiper-container product-details-big-img-slider product-details-big-img-style">
                                                                         <div class="swiper-wrapper">
-                                                                            <div class="swiper-slide">
+                                                                            <div *ngFor="let img of p.productImgs"
+                                                                                class="swiper-slide">
                                                                                 <div class="product-details-big-img">
-                                                                                    <img src="{{p.productImg}}" alt="">
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="swiper-slide">
-                                                                                <div class="product-details-big-img">
-                                                                                    <img src="{{p.productImg}}" alt="">
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="swiper-slide">
-                                                                                <div class="product-details-big-img">
-                                                                                    <img src="{{p.productImg}}" alt="">
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="swiper-slide">
-                                                                                <div class="product-details-big-img">
-                                                                                    <img src="{{p.productImg}}" alt="">
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="swiper-slide">
-                                                                                <div class="product-details-big-img">
-                                                                                    <img src="assets/images/product-details/pro-details-large-img-2.jpg"
-                                                                                        alt="">
+                                                                                    <img src="{{img}}" alt="">
                                                                                 </div>
                                                                             </div>
                                                                         </div>
@@ -223,35 +203,54 @@
                                         </div>
                                     </div>
                                     <!-- Product Modal end -->
+
                                 </div>
 
                             </div>
-                            <div class="pagination-style mt-20">
-                                <ul>
-                                    <li><a class="active" href="#">1</a></li>
-                                    <li><a href="#">2</a></li>
-                                    <li><a href="#">3</a></li>
-                                    <li><a href="#">4</a></li>
-                                    <li><a href="#">5</a></li>
-                                </ul>
-                            </div>
+                            <pagination-template class="text-center" #p1="paginationApi" [id]="config1.id!"
+                                (pageChange)="config1.currentPage = $event; backToPosition()">
+
+
+                                <div class="custom-pagination">
+                                    <div class="pagination-previous" [class.disabled]="p1.isFirstPage()">
+                                        <a *ngIf="!p1.isFirstPage()" (click)="p1.previous(); backToPosition()">
+                                        </a>
+                                    </div>
+
+                                    <div *ngFor="let page of p1.pages" [class.current]="p1.getCurrent() === page.value">
+                                        <a (click)="p1.setCurrent(page.value); backToPosition()"
+                                            *ngIf="p1.getCurrent() !== page.value">
+                                            <span>{{ page.label }}</span>
+                                        </a>
+                                        <div *ngIf="p1.getCurrent() === page.value">
+                                            <span>{{ page.label }}</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="pagination-next" [class.disabled]="p1.isLastPage()">
+                                        <a *ngIf="!p1.isLastPage()" (click)="p1.next(); backToPosition()"></a>
+                                    </div>
+                                </div>
+
+                            </pagination-template>
+
                         </div>
                         <div id="pro-2" class="tab-pane">
                             <div class="row">
-                                <div class="col-12" *ngFor="let p of filterPro">
+                                <div class="col-12" *ngFor="let p of filterPro | paginate: config2">
                                     <div class="shop-list-wrap product-wrap product-responsive-style mb-50">
                                         <div class="row align-items-center">
                                             <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6 col-12">
                                                 <div class="product-img">
                                                     <a href="product-details.html">
-                                                        <img class="default-img" src="{{p.productImg}}" alt="">
+                                                        <img class="default-img" src="{{p.productImgs[0]}}" alt="">
                                                     </a>
                                                     <div class="product-badge">
                                                         <span class="red">Sale</span>
                                                     </div>
                                                     <div class="product-list-quickview tooltip-style">
                                                         <a class="test" aria-label="Quick View" data-bs-toggle="modal"
-                                                            href="{{'#hello2'+ p.productId}}"><i
+                                                            href="#exampleModal1"><i
                                                                 class="ion-ios-eye-outline"></i></a>
                                                     </div>
                                                 </div>
@@ -275,7 +274,8 @@
                                                     <div class="product-list-action">
                                                         <div class="product-list-cart">
                                                             <a href="product-details.html"><i
-                                                                    class="ion-plus"></i>Select options</a>
+                                                                    class="ion-plus"></i>Select
+                                                                options</a>
                                                         </div>
                                                         <div class="product-list-wishlist tooltip-style">
                                                             <button aria-label="Add To Wishlist"><i
@@ -288,8 +288,7 @@
                                     </div>
 
                                     <!-- Product Modal start -->
-                                    <div class="modal modal-style" [id]="'hello2'+ p.productId" tabindex="-1"
-                                        role="dialog">
+                                    <div class="modal modal-style" id="exampleModal1" tabindex="-1" role="dialog">
                                         <div class="modal-overlay">
                                             <div class="modal-dialog" role="document">
                                                 <div class="modal-content">
@@ -304,30 +303,10 @@
                                                                     <div
                                                                         class="swiper-container product-details-big-img-slider product-details-big-img-style">
                                                                         <div class="swiper-wrapper">
-                                                                            <div class="swiper-slide">
+                                                                            <div *ngFor="let img of p.productImgs"
+                                                                                class="swiper-slide">
                                                                                 <div class="product-details-big-img">
-                                                                                    <img src="{{p.productImg}}" alt="">
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="swiper-slide">
-                                                                                <div class="product-details-big-img">
-                                                                                    <img src="{{p.productImg}}" alt="">
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="swiper-slide">
-                                                                                <div class="product-details-big-img">
-                                                                                    <img src="{{p.productImg}}" alt="">
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="swiper-slide">
-                                                                                <div class="product-details-big-img">
-                                                                                    <img src="{{p.productImg}}" alt="">
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="swiper-slide">
-                                                                                <div class="product-details-big-img">
-                                                                                    <img src="assets/images/product-details/pro-details-large-img-2.jpg"
-                                                                                        alt="">
+                                                                                    <img src="{{img}}" alt="">
                                                                                 </div>
                                                                             </div>
                                                                         </div>
@@ -395,16 +374,35 @@
                                     <!-- Product Modal end -->
                                 </div>
                             </div>
-                            <div class="pagination-style mt-20">
-                                <ul>
-                                    <li><a class="active" href="#">1</a></li>
-                                    <li><a href="#">2</a></li>
-                                    <li><a href="#">3</a></li>
-                                    <li><a href="#">4</a></li>
-                                    <li><a href="#">5</a></li>
-                                </ul>
-                            </div>
+                            <pagination-template class="text-center" #p="paginationApi" [id]="config2.id!"
+                                (pageChange)="config2.currentPage = $event; backToPosition()">
+
+
+                                <div class="custom-pagination">
+                                    <div class="pagination-previous" [class.disabled]="p.isFirstPage()">
+                                        <a *ngIf="!p.isFirstPage()" (click)="p.previous(); backToPosition()">
+                                        </a>
+                                    </div>
+
+                                    <div *ngFor="let page of p.pages" [class.current]="p.getCurrent() === page.value">
+                                        <a (click)="p.setCurrent(page.value); backToPosition()"
+                                            *ngIf="p.getCurrent() !== page.value">
+                                            <span>{{ page.label }}</span>
+                                        </a>
+                                        <div *ngIf="p.getCurrent() === page.value">
+                                            <span>{{ page.label }}</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="pagination-next" [class.disabled]="p.isLastPage()">
+                                        <a *ngIf="!p.isLastPage()" (click)="p.next(); backToPosition()"> </a>
+                                    </div>
+                                </div>
+
+                            </pagination-template>
                         </div>
+
+
                     </div>
                 </div>
             </div>
@@ -468,13 +466,15 @@
                             <div class="sidebar-widget-sub-title-2 mb-25">
                                 <h3>Price </h3>
                             </div>
-                            <div class="price-filter price-filter-modify">
+                            <!-- <div class="price-filter price-filter-modify">
                                 <div id="slider-range"></div>
                                 <div class="price-slider-amount">
                                     <span>Range: </span>
-                                    <input type="text" id="amount" name="price" placeholder="Add Your Price" />
+                                    <input type="text" id="amount" name="price" placeholder="Add Your Price"/>
                                 </div>
-                            </div>
+                            </div> -->
+                            <ngx-slider [(value)]="minValue" [(highValue)]="maxValue" [options]="options"
+                                (userChange)="onUserChange($event)"></ngx-slider>
                         </div>
                         <div class="sidebar-widget mb-40">
                             <div class="sidebar-widget-sub-title-2 mb-20">

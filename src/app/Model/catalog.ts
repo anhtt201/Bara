@@ -5,7 +5,7 @@ export class Catalog {
   catalogName!: string;
   catalogParentId!: number;
   catalogImg!: string;
-  catalogImgId!: string;
+  catalogImgId!: number;
   catalogDescription!: string;
   catalogStatus!: boolean;
   catalogIsHot!: boolean;

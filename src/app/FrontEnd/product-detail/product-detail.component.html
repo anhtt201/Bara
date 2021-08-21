@@ -8,11 +8,20 @@
                             <div
                                 class="swiper-container product-details-big-img-slider-2 product-details-big-img-style">
                                 <div class="swiper-wrapper">
-                                    <div class="swiper-slide">
+                                    <div class="swiper-slide" *ngFor="let imgs of productDetail.productImgs; let i = index">
+                                        <div class="easyzoom-style">
+                                            <div class="easyzoom easyzoom--overlay">
+                                                <a href="{{productDetail.productImgs[i+1]}}" style="width: 500px; height: 688px">
+                                                    <img src="{{imgs}}" alt="">
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- <div class="swiper-slide">
                                         <div class="easyzoom-style">
                                             <div class="easyzoom easyzoom--overlay">
                                                 <a href="assets/images/product-details/carave-zoom.png">
-                                                    <img src="{{productDetail.productImg}}" alt="">
+                                                    <img src="{{productDetail.productImgs}}" alt="">
                                                 </a>
                                             </div>
                                         </div>
@@ -21,7 +30,7 @@
                                         <div class="easyzoom-style">
                                             <div class="easyzoom easyzoom--overlay">
                                                 <a href="assets/images/product-details/carave-zoom.png">
-                                                    <img src="{{productDetail.productImg}}" alt="">
+                                                    <img src="{{productDetail.productImgs}}" alt="">
                                                 </a>
                                             </div>
                                         </div>
@@ -30,7 +39,7 @@
                                         <div class="easyzoom-style">
                                             <div class="easyzoom easyzoom--overlay">
                                                 <a href="assets/images/product-details/carave-zoom.png">
-                                                    <img src="{{productDetail.productImg}}" alt="">
+                                                    <img src="{{productDetail.productImgs}}" alt="">
                                                 </a>
                                             </div>
                                         </div>
@@ -39,20 +48,11 @@
                                         <div class="easyzoom-style">
                                             <div class="easyzoom easyzoom--overlay">
                                                 <a href="assets/images/product-details/carave-zoom.png">
-                                                    <img src="{{productDetail.productImg}}" alt="">
+                                                    <img src="{{productDetail.productImgs}}" alt="">
                                                 </a>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="swiper-slide">
-                                        <div class="easyzoom-style">
-                                            <div class="easyzoom easyzoom--overlay">
-                                                <a href="assets/images/product-details/carave-zoom.png">
-                                                    <img src="{{productDetail.productImg}}" alt="">
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    </div> -->
                                 </div>
                                 <div class="product-details-next product-details-nav-style"> <i
                                         class="arrow_carrot-right"></i></div>
@@ -62,35 +62,35 @@
                             <div
                                 class="swiper-container product-details-small-img-slider product-details-small-img-slider-style">
                                 <div class="swiper-wrapper">
-                                    <div class="swiper-slide">
+                                    <div class="swiper-slide" *ngFor="let imgs of productDetail.productImgs">
                                         <div class="product-details-small-img">
-                                            <img src="{{productDetail.productImg}}" alt="Product Thumnail">
+                                            <img src="{{imgs}}" alt="Product Thumnail">
                                         </div>
                                     </div>
-                                    <div class="swiper-slide">
+                                    <!-- <div class="swiper-slide">
                                         <div class="product-details-small-img">
-                                            <img src="{{productDetail.productImg}}" alt="Product Thumnail"
+                                            <img src="{{productDetail.productImgs}}" alt="Product Thumnail"
                                                 style="max-width: 100%">
                                         </div>
                                     </div>
                                     <div class="swiper-slide">
                                         <div class="product-details-small-img">
-                                            <img src="{{productDetail.productImg}}" alt="Product Thumnail"
+                                            <img src="{{productDetail.productImgs}}" alt="Product Thumnail"
                                                 style="max-width: 100%">
                                         </div>
                                     </div>
                                     <div class="swiper-slide">
                                         <div class="product-details-small-img">
-                                            <img src="{{productDetail.productImg}}" alt="Product Thumnail"
+                                            <img src="{{productDetail.productImgs}}" alt="Product Thumnail"
                                                 style="max-width: 100%">
                                         </div>
                                     </div>
                                     <div class="swiper-slide">
                                         <div class="product-details-small-img">
-                                            <img src="{{productDetail.productImg}}" alt="Product Thumnail"
+                                            <img src="{{productDetail.productImgs}}" alt="Product Thumnail"
                                                 style="max-width: 100%">
                                         </div>
-                                    </div>
+                                    </div> -->
                                 </div>
                             </div>
                         </div>
@@ -222,14 +222,14 @@
                                         <div class="review-content-wrap">
                                             <div class="client-name-rating">
                                                 <div class="client-name">
-                                                    <p>Cobus Bester <span>- {{comment.createdDay}}</span></p>
+                                                    <p>{{comment.user.username}} <span>- {{comment.createdDay}}</span></p>
                                                 </div>
                                                 <div class="client-rating">
+                                                    <i class="ion-android-star" *ngFor="let r of comment.commentRate"></i>
+                                                    <!-- <i class="ion-android-star"></i>
                                                     <i class="ion-android-star"></i>
                                                     <i class="ion-android-star"></i>
-                                                    <i class="ion-android-star"></i>
-                                                    <i class="ion-android-star"></i>
-                                                    <i class="ion-android-star gray"></i>
+                                                    <i class="ion-android-star gray"></i> -->
                                                 </div>
                                             </div>
                                             <p>{{comment.commentContent}}</p>
@@ -241,11 +241,15 @@
                                     <h4> Add a review </h4>
                                     <h5>Your rating</h5>
                                     <div class="client-rating">
-                                        <i class="ion-android-star"></i>
-                                        <i class="ion-android-star"></i>
-                                        <i class="ion-android-star"></i>
-                                        <i class="ion-android-star"></i>
-                                        <i class="ion-android-star gray"></i>
+                                        <ngx-stars [readonly]="false" [size]="2" [maxStars]="5" [color]="'#FF0000'"
+                                            [animation]="true" [animationSpeed]="200" [wholeStars]="true"
+                                            (ratingOutput)="onRatingSet($event)">
+                                        </ngx-stars>
+                                        <!-- <i class=" ion-android-star"></i>
+                                            <i class="ion-android-star"></i>
+                                            <i class="ion-android-star"></i>
+                                            <i class="ion-android-star"></i>
+                                            <i class="ion-android-star gray"></i> -->
                                     </div>
                                     <form (ngSubmit)="postComment(userInput.value)">
                                         <div class="row">
@@ -269,7 +273,7 @@
                                             </div> -->
                                             <div class="col-12">
                                                 <div class="form-submit">
-                                                    <input type="submit" value="Submit" formControlName="content">
+                                                    <input type="submit" value="Submit">
                                                 </div>
                                             </div>
                                         </div>

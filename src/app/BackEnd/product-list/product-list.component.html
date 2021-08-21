@@ -785,8 +785,13 @@
                                     </ul>
                                 </td>
                                 <td>
-                                    <img [src]=" product.productImg" [alt]="product.productName" width="100"
-                                        class="p-shadow-4" />
+                                    <ul>
+                                        <li *ngFor="let imgs of product.productImgs">
+                                            <img [src]="imgs" [alt]="product.productName" width="100"
+                                                class="p-shadow-4" />
+                                        </li>
+                                    </ul>
+
                                 </td>
                                 <td>
                                     <i class="icon_pencil-edit_alt fa-2x mr-4" (click)="editProduct(product)"
@@ -802,14 +807,29 @@
                     <p-dialog [(visible)]="productDialog" [style]="{width: '800px'}" header="Product Details"
                         [modal]="true" styleClass="p-fluid">
                         <ng-template pTemplate="content">
-                            <img [src]="product.productImg" [alt]="product.productName" class="product-image"
-                                *ngIf="product.productImg">
+                            <ul>
+                                <li *ngFor="let imgs of product.productImgs; let i = index">
+                                    <img [src]="imgs" [alt]="product.productName" width="100" class="p-shadow-4" />
+                                    <button class="btn btn-danger" (click)="deleteFile(imgs, i)">Remove</button>
+                                </li>
+                            </ul>
                             <div class="p-field">
                                 <label for="name">Product Name</label>
                                 <input type="text" pInputText id="name" [(ngModel)]="product.productName" required
-                                    autofocus />
-                                <small class="p-error" *ngIf="submitted && !product.productName">Name is
-                                    required.</small>
+                                    autofocus #productName="ngModel" appProductName appProductLength />
+                                <div class="alert alert-danger"
+                                    *ngIf="productName.errors && (productName.dirty || productName.touched)">
+                                    <div *ngIf="productName.errors.required">
+                                        Product Name is required
+                                    </div>
+                                    <div *ngIf="productName.errors?.proName">
+                                        Product Name must contains one uppercase character, at least one lowercase
+                                        character
+                                    </div>
+                                    <div *ngIf="productName.errors?.proLength">
+                                        Product Name must have at least 6 characters
+                                    </div>
+                                </div>
                             </div>
                             <div class="p-field">
                                 <label for="description">Catalog</label>
@@ -889,7 +909,7 @@
                                 <!-- <input type="file" accept="image/*" (change)="selectFile($event)" /> -->
                                 <p-fileUpload chooseLabel="Upload Image" accept="image/*" [maxFileSize]="1000000"
                                     (onSelect)="selectFile($event)" [showUploadButton]="false"
-                                    [showCancelButton]="false">
+                                    [showCancelButton]="false" [multiple]="true">
                                     <ng-template pTemplate="content">
                                         <ul *ngIf="currentFile">
                                             <li>{{currentFile.name}} - {{currentFile.size}} bytes</li>
@@ -900,8 +920,14 @@
                         </ng-template>
 
                         <ng-template pTemplate="footer" class="pt-4">
-                            <i class="ion-close mr-5" (click)="hideProduct()">Cancel</i>
-                            <i class="ion-checkmark" (click)="saveProduct()">Save</i>
+                            <!-- <p-button class="ion-close mr-5" (click)="hideProduct()">Cancel</p-button>
+                            <p-button class="ion-checkmark" (click)="saveProduct()">Save</p-button> -->
+
+
+                            <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text"
+                                (click)="hideProduct()"></button>
+                            <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text"
+                                (click)="(isValid()) ? saveProduct() : false"></button>
                         </ng-template>
                     </p-dialog>
                 </div>

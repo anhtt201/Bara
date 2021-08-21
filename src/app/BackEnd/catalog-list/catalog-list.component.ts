@@ -119,7 +119,7 @@ export class CatalogListComponent implements OnInit, AfterViewInit {
 
       this.fileService.upload(this.currentFile).subscribe((e) => {
         currentCat.catalogImg = String(e.fileDownloadUri);
-        currentCat.catalogImgId = String(e.fileId);
+        currentCat.catalogImgId = e.fileId;
         console.log(currentCat);
 
         this.catService.addCatalog(currentCat).subscribe((data) => {

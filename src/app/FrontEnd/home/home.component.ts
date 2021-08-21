@@ -38,11 +38,21 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this.lazyService.load('assets/js/main.js');
   }
 
+  baseUrl = 'http://localhost:8080/api/fileManager/downloadFile/';
+
   ngOnInit(): void {
     this.lazyService.load('assets/js/plugins/swiper.min.js');
     this.lazyService.load('assets/js/plugins/jarallax.min.js');
     this.lazyService.load('assets/js/main.js');
     this.productService.getAllProduct().subscribe((data) => {
+      data.forEach((x) => {
+        x.productImgIds = [];
+        x.productImgs = x.productImg.split(';');
+        x.productImgs.forEach((e) => {
+          console.log(e.substring(this.baseUrl.length));
+          x.productImgIds.push(parseInt(e.substring(this.baseUrl.length)));
+        });
+      });
       this.productList = data;
       console.log(this.productList);
     });
@@ -76,7 +86,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
       this.cartNumberFunc();
       this.toastr.success(
         'Your item has been added to your cart!',
-        'Succesfull'
+        'Succesfully'
       );
     } else {
       this.toastr.error('You need to login first!', 'Failed');

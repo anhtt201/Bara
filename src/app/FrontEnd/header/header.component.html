@@ -52,9 +52,32 @@
                         <div class="col-xl-4 col-lg-5">
                             <div class="search-style-2 search-style-2-mrg">
                                 <form action="#">
-                                    <input placeholder="Search here " type="text">
+                                    <input autocomplete="off" placeholder="Search here " type="text" name="keyword"
+                                        [(ngModel)]="filter.keyword" (input)="listProduct(filter.keyword)"
+                                        (keyup)="openSearch()" (clickOutside)="closeSearch()">
                                     <button class="button-search"><i class="ion-ios-search-strong"></i></button>
                                 </form>
+                                <div class="search-item" *ngIf="searchChange">
+                                    <ul *ngIf="filterPro.length > 0; else notFoundProduct" class="filter-search">
+                                        <li *ngFor="let p of filterPro">
+                                            <a [routerLink]="['/product', p.productId]">{{p.productName}}</a>
+                                        </li>
+                                    </ul>
+                                    <ng-template #notFoundProduct>
+                                        <ul class="filter-search">
+                                            <li>Không tìm thấy sản phẩm nào</li>
+                                        </ul>
+                                    </ng-template>
+
+                                    <!-- <ul *ngIf="filterCat; else notFoundCat" class="filter-search">
+                                        <li *ngFor="let c of filterCat">
+                                            <a>{{c.catalogName}}</a>
+                                        </li>
+                                    </ul>
+                                    <ng-template class="search-item" #notFoundCat>
+                                        Không tìm thấy sản phẩm nào
+                                    </ng-template> -->
+                                </div>
                             </div>
                         </div>
                         <div class="col-xl-4 col-lg-2">
@@ -81,11 +104,10 @@
                                     <div class="cart-dropdown-wrap">
                                         <div class="cart-content">
                                             <ul>
-                                                <li class="single-product-cart"
-                                                    *ngFor="let c of data; let i = index">
+                                                <li class="single-product-cart" *ngFor="let c of data; let i = index">
                                                     <div class="cart-img">
                                                         <a href="product-details.html"><img
-                                                                src="{{c.product.productImg}}" alt=""></a>
+                                                                src="{{c.product.productImgs[0]}}" alt=""></a>
                                                     </div>
                                                     <div class="cart-title">
                                                         <h4><a href="product-details.html">{{c.product.productName}}</a>
@@ -107,7 +129,7 @@
                                             <div class="cart-checkout-btn">
                                                 <a class="cart" routerLink="/cart">view cart <i
                                                         class="ion-ios-arrow-right"></i></a>
-                                                <a class="checkout" href="checkout.html">checkout <i
+                                                <a class="checkout" routerLink="/checkout">checkout <i
                                                         class="ion-ios-arrow-right"></i></a>
                                             </div>
                                         </div>
@@ -270,7 +292,8 @@
                             <div class="header-action-cart header-action-cart-mrg2">
                                 <a class="black" href="#">
                                     <i class="ion-bag"></i>
-                                    <span class="product-count bg-theme-color-pink product-count-left">{{cartNumber}}</span>
+                                    <span
+                                        class="product-count bg-theme-color-pink product-count-left">{{cartNumber}}</span>
                                     <span class="amount">$5.00</span>
                                 </a>
                                 <div class="cart-dropdown-wrap">
@@ -278,8 +301,8 @@
                                         <ul>
                                             <li class="single-product-cart" *ngFor="let c of data; let i = index">
                                                 <div class="cart-img">
-                                                    <a href="product-details.html"><img src="{{c.product.productImg}}"
-                                                            alt=""></a>
+                                                    <a href="product-details.html"><img
+                                                            src="{{c.product.productImgs[0]}}" alt=""></a>
                                                 </div>
                                                 <div class="cart-title">
                                                     <h4><a href="product-details.html">{{c.product.productName}}</a>
@@ -301,7 +324,7 @@
                                         <div class="cart-checkout-btn">
                                             <a class="cart" routerLink="/cart">view cart <i
                                                     class="ion-ios-arrow-right"></i></a>
-                                            <a class="checkout" href="checkout.html">checkout <i
+                                            <a class="checkout" routerLink="/checkout">checkout <i
                                                     class="ion-ios-arrow-right"></i></a>
                                         </div>
                                     </div>
@@ -340,7 +363,7 @@
                                     <ul>
                                         <li class="single-product-cart" *ngFor="let c of data; let i = index">
                                             <div class="cart-img">
-                                                <a href="product-details.html"><img src="{{c.product.productImg}}"
+                                                <a href="product-details.html"><img src="{{c.product.productImgs[0]}}"
                                                         alt=""></a>
                                             </div>
                                             <div class="cart-title">
@@ -363,7 +386,7 @@
                                     <div class="cart-checkout-btn">
                                         <a class="cart" routerLink="/cart">view cart <i
                                                 class="ion-ios-arrow-right"></i></a>
-                                        <a class="checkout" href="checkout.html">checkout <i
+                                        <a class="checkout" routerLink="/checkout">checkout <i
                                                 class="ion-ios-arrow-right"></i></a>
                                     </div>
                                 </div>

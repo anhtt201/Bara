@@ -10,7 +10,9 @@ export class Product {
   productPriceOut!: number;
   productDiscount!: number;
   productImg!: String;
-  productImgId!: String;
+  productImgs!: String[];
+  // productImgId!: String;
+  productImgIds!: number[];
   productDescription!: String;
   productCreatedDay!: String;
   productQuantity!: number;

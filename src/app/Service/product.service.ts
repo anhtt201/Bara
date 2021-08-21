@@ -9,6 +9,7 @@ import { Product } from '../Model/product';
 })
 export class ProductService {
   private base_URL: string = 'http://localhost:8080/api/v2/product/';
+  private validator_URL: string = 'http://localhost:8080/api/v2/';
 
   constructor(private http: HttpClient) {}
 
@@ -30,5 +31,23 @@ export class ProductService {
 
   getProductById(id: number): Observable<Product> {
     return this.http.get<Product>(`${this.base_URL}${id}`);
+  }
+
+  search(productName: String): Observable<Product[]> {
+    return this.http.get<Product[]>(
+      `${this.base_URL + 'search/'}${productName}`
+    );
+  }
+
+  checkProductName(proName: String): Observable<Boolean> {
+    return this.http.get<Boolean>(
+      `${this.validator_URL}checkproductname/${proName}`
+    );
+  }
+
+  checkProductLength(proName: String): Observable<Boolean> {
+    return this.http.get<Boolean>(
+      `${this.validator_URL}checkproductlength/${proName}`
+    );
   }
 }

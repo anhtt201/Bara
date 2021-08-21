@@ -9,7 +9,8 @@ import { Router } from '@angular/router';
 import * as moment from 'moment';
 import { ToastrService } from 'ngx-toastr';
 import { Table } from 'primeng/table';
-import { Subject } from 'rxjs';
+import { Subject, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { Brand } from 'src/app/Model/brand';
 import { Catalog } from 'src/app/Model/catalog';
 import { Color } from 'src/app/Model/color';
@@ -50,6 +51,8 @@ export class ProductListComponent implements OnInit, AfterViewInit {
   submitted!: boolean;
 
   cols!: any[];
+
+  baseUrl = 'http://localhost:8080/api/fileManager/downloadFile/';
 
   constructor(
     private lazyService: LazyLoadScriptService,
@@ -96,6 +99,15 @@ export class ProductListComponent implements OnInit, AfterViewInit {
 
   getAll() {
     this.proService.getAllProduct().subscribe((data) => {
+      data.forEach((x) => {
+        x.productImgIds = [];
+        x.productImgs = x.productImg.split(';');
+        x.productImgs.forEach((e) => {
+          console.log(e.substring(this.baseUrl.length));
+          x.productImgIds.push(parseInt(e.substring(this.baseUrl.length)));
+        });
+      });
+
       this.productList = data;
       console.log(this.productList);
     });
@@ -131,6 +143,7 @@ export class ProductListComponent implements OnInit, AfterViewInit {
   }
 
   editProduct(product: Product) {
+    // product.productImgs = product.productImg.split(';');
     this.product = { ...product };
     const currentPro = { ...product };
     this.selectedCatalog = currentPro.catalog;
@@ -138,7 +151,7 @@ export class ProductListComponent implements OnInit, AfterViewInit {
     this.selectedColors = currentPro.colors;
     this.selectedSizes = currentPro.sizes;
     this.productDialog = true;
-    console.log(currentPro);
+    console.log(product);
   }
 
   hideProduct() {
@@ -157,83 +170,133 @@ export class ProductListComponent implements OnInit, AfterViewInit {
     }
   }
 
-  saveProduct() {
+  async saveProduct() {
     this.submitted = true;
 
-    const file: File = this.uploadedFiles[0];
-    this.currentFile = file;
-    console.log(this.currentFile);
+    console.log(this.uploadedFiles);
 
-    if (this.product.productId != null) {
+    const files: File[] = [];
+    for (let i = 0; i < this.uploadedFiles.length; i++) {
+      files.push(this.uploadedFiles[i]);
+    }
+    if (this.product.productId == null) {
       const currentPro = { ...this.product };
       currentPro.catalog = this.selectedCatalog;
       currentPro.brand = this.selectedBrand;
       currentPro.colors = this.selectedColors;
       currentPro.sizes = this.selectedSizes;
       currentPro.productCreatedDay = moment().format('DD-MM-YYYY');
+
+      let uploadFileResponse = await this.fileService
+        .uploads(files)
+        .toPromise();
+
+      const selectedImg: String[] = [];
+      uploadFileResponse.map((x) => {
+        selectedImg.push(x.fileDownloadUri);
+      });
+      currentPro.productImg = selectedImg.join(';');
+      // currentPro.productImgs.forEach((e) => {
+      //   console.log(e.substring(this.baseUrl.length));
+      //   currentPro.productImgIds.push(
+      //     parseInt(e.substring(this.baseUrl.length))
+      //   );
+      // });
       console.log(currentPro);
 
-      this.fileService
-        .update(this.currentFile, currentPro.productImgId)
-        .subscribe((e) => {
-          currentPro.productImg = String(e.fileDownloadUri);
-          console.log(currentPro);
-
-          this.productList[this.findIndexById(currentPro.productId)] =
-            currentPro;
-
-          this.proService
-            .updateProduct(currentPro.productId, currentPro)
-            .subscribe((data) => {
-              console.log(data);
-        console.log(this.product);
-        this.productList.push(data);
-        this.table.totalRecords++;
-            });
-
-          this.toastrService.success('Updated succesfully', 'Succesfully');
-        });
-    } else {
-      const currentPro = { ...this.product };
-      currentPro.catalog = this.selectedCatalog;
-      currentPro.brand = this.selectedBrand;
-      currentPro.colors = this.selectedColors;
-      currentPro.sizes = this.selectedSizes;
-      currentPro.productCreatedDay = moment().format('DD-MM-YYYY');
-      console.log(currentPro);
-
-      this.fileService.upload(this.currentFile).subscribe((e) => {
-        currentPro.productImg = String(e.fileDownloadUri);
-        currentPro.productImgId = String(e.fileId);
-        console.log(currentPro);
-
-        this.proService.addProduct(currentPro).subscribe((data) => {
+      this.proService.addProduct(currentPro).subscribe(
+        (data) => {
+          data.productImgIds = [];
+          data.productImgs = data.productImg.split(';');
+          data.productImgs.forEach((e) => {
+            console.log(e.substring(this.baseUrl.length));
+            data.productImgIds.push(parseInt(e.substring(this.baseUrl.length)));
+          });
           this.product = data;
           console.log(data);
           console.log(this.product);
           this.productList.push(data);
           this.table.totalRecords++;
-        });
+          this.toastrService.success(
+            'Product has been added succesfully!',
+            'Succesfull'
+          );
+        },
+        () => {
+          currentPro.productImgIds.forEach((x) => {
+            this.fileService.delete(x).subscribe((e) => {
+              console.log(e);
+            });
+          });
+          this.toastrService.error(
+            'Something wrong! Please Try Again',
+            'Failed!'
+          );
+        }
+      );
+    } else {
+      let uploadFileResponse = await this.fileService
+        .uploads(files)
+        .toPromise();
 
-        this.toastrService.success(
-          'Product has been added succesfully!',
-          'Succesfull'
-        );
+      const selectedImg: String[] = [];
+      if (this.product.productImg != '')
+        selectedImg.push(this.product.productImg);
+      uploadFileResponse.map((x) => {
+        selectedImg.push(x.fileDownloadUri);
       });
+
+      const currentPro = { ...this.product };
+      currentPro.catalog = this.selectedCatalog;
+      currentPro.brand = this.selectedBrand;
+      currentPro.colors = this.selectedColors;
+      currentPro.sizes = this.selectedSizes;
+      currentPro.productCreatedDay = moment().format('DD-MM-YYYY');
+      currentPro.productImg = selectedImg.join(';');
+      console.log(currentPro);
+
+      this.proService
+        .updateProduct(currentPro.productId, currentPro)
+        .subscribe((data) => {
+          currentPro.productImgIds = [];
+          currentPro.productImgs = currentPro.productImg.split(';');
+          currentPro.productImgs.forEach((e) => {
+            console.log(e.substring(this.baseUrl.length));
+            currentPro.productImgIds.push(
+              parseInt(e.substring(this.baseUrl.length))
+            );
+          });
+          this.productList[this.findIndexById(currentPro.productId)] =
+            currentPro;
+          this.product = currentPro;
+          console.log(data);
+          console.log(this.product);
+        });
+      this.toastrService.success('Updated succesfully', 'Succesfully');
     }
 
     this.productList = [...this.productList];
     this.productList = this.productList.slice();
+
     this.productDialog = false;
     this.uploadedFiles = [];
     this.product = new Product();
   }
 
   deleteProduct(product: Product) {
-    this.proService.deleteProduct(product.productId).subscribe((data) => {
-      this.fileService.delete(product.productImgId).subscribe((e) => {
+    product.productImgIds = [];
+    product.productImgs = product.productImg.split(';');
+    product.productImgs.forEach((e) => {
+      console.log(e.substring(this.baseUrl.length));
+      product.productImgIds.push(parseInt(e.substring(this.baseUrl.length)));
+    });
+    product.productImgIds.forEach((x) => {
+      this.fileService.delete(x).subscribe((e) => {
         console.log(e);
       });
+    });
+
+    this.proService.deleteProduct(product.productId).subscribe((data) => {
       console.log(data);
     });
 
@@ -245,6 +308,26 @@ export class ProductListComponent implements OnInit, AfterViewInit {
     this.table.totalRecords--;
   }
 
+  deleteFile(file: any, i: number) {
+    this.fileService
+      .delete(parseInt(file.substring(this.baseUrl.length)))
+      .subscribe((e) => {
+        console.log(e);
+      });
+
+    this.product.productImgs.splice(i, 1);
+    if (this.product.productImgs.length == 0) {
+      this.product.productImgs = [];
+    }
+    this.product.productImg = this.product.productImgs.join(';');
+    this.product.productImgIds.splice(i, 1);
+    if (this.product.productImgIds.length == 0) {
+      this.product.productImgIds = [];
+    }
+
+    console.log(this.product);
+  }
+
   findIndexById(id: number): number {
     let index = -1;
     for (let i = 0; i < this.productList.length; i++) {
@@ -254,5 +337,30 @@ export class ProductListComponent implements OnInit, AfterViewInit {
       }
     }
     return index;
+  }
+
+  isValid() {
+    if (
+      this.product.productName == null ||
+      this.product.productPriceIn == null ||
+      this.product.productPriceOut == null ||
+      this.product.productDescription == null ||
+      this.product.productDiscount == null ||
+      this.product.productQuantity == null ||
+      this.selectedCatalog == null ||
+      this.selectedBrand == null ||
+      this.selectedColors == null ||
+      this.selectedSizes == null ||
+      this.product.productStatus == null ||
+      this.product.productIsHot == null ||
+      !(
+        this.proService.checkProductName(this.product.productName) &&
+        this.proService.checkProductLength(this.product.productName)
+      )
+    ) {
+      this.toastrService.error('Something wrong! Please Try Again', 'Failed!');
+      return false;
+    }
+    return true;
   }
 }

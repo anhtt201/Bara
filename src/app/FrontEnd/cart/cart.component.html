@@ -29,7 +29,7 @@
                                 <tbody>
                                     <tr *ngFor="let c of data; let i = index">
                                         <td class="product-thumbnail">
-                                            <a href="product-details.html"><img src="{{c.product.productImg}}"
+                                            <a href="product-details.html"><img src="{{c.product.productImgs[0]}}"
                                                     alt=""></a>
                                         </td>
                                         <td class="product-name">
@@ -120,7 +120,7 @@
                         <h2>Total <span>{{totalCart | currency}}</span></h2>
                     </div>
                     <div class="grand-total-btn">
-                        <a href="checkout.html"> Proceed to checkout</a>
+                        <a routerLink="/checkout"> Proceed to checkout</a>
                     </div>
                 </div>
             </div>

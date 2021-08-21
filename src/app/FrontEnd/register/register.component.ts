@@ -26,7 +26,7 @@ function unique(): ValidatorFn {
 })
 export class RegisterComponent implements OnInit {
   registrationForm!: FormGroup;
-  user: User = new User(0, '', '', '', '', [], '', '', 0, new Date(), false);
+  user: User = new User(0, '', '', '', '', [], '', '', 0, '', false);
   isRegistered: boolean = false;
   submitted: boolean = false;
   errorMessage: any = '';

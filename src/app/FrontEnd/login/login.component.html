@@ -30,7 +30,8 @@
                         </div>
                         <div class="col-lg-5 col-md-4">
                             <div class="login-register-input">
-                                <input type="password" placeholder="Password" formControlName="password" name="password">
+                                <input type="password" placeholder="Password" formControlName="password"
+                                    name="password">
                             </div>
                             <div class="alert alert-danger" *ngIf="loginForm.get('password')!.invalid
                             && loginForm.get('password')!.touched">
@@ -53,7 +54,7 @@
                     </div>
                     <div class="keep-forgot-wrap">
                         <div class="keep-wrap checkout-checkbox-style-3">
-                            <input type="checkbox" name="remember-me">
+                            <input type="checkbox" name="remember-me" (change)="isChecked($event)">
                             <p>Keep me logged in</p>
                             <span class="checkmark"></span>
                         </div>
@@ -101,7 +102,8 @@
                             <div class="myaccount-content">
                                 <h3>Dashboard</h3>
                                 <div class="welcome">
-                                    <p>Hello, <strong>{{username}}</strong></p>
+                                    <p>Hello, <strong>{{username}} (Click on Account Details to update your
+                                            information)</strong></p>
                                 </div>
 
                                 <p class="mb-0">From your account dashboard. you can easily check & view your recent
@@ -114,8 +116,10 @@
                                     <li>{{address}}</li>
                                     <li>{{avatar}}</li>
                                     <li>{{balance}}</li>
-                                    <li>{{dob}}</li>
+                                    <li>{{dob | date: 'dd/MM/yyyy'}}</li>
                                 </ul>
+
+
                             </div>
                         </div>
                         <!-- Single Tab Content End -->
@@ -224,70 +228,48 @@
                             <div class="myaccount-content">
                                 <h3>Account Details</h3>
                                 <div class="account-details-form">
-                                    <form role="form" [formGroup]="frmUserUp" (ngSubmit)="updateUser()">
-                                        <div class="row">
-                                            <div class="col-md-2 mb-4">
-                                                <label> Id </label>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <input type="text" formControlName="id" readonly>
-                                            </div>
+                                    <form role="form" [formGroup]="frmUserUp" (ngSubmit)="updateUser()"
+                                        class="floating-labels">
+                                        <div class="form-group m-b-40">
+                                            <input type="text" class="form-control" formControlName="username">
+                                            <span class="bar"></span>
+                                            <label>Username </label>
+
                                         </div>
-                                        <div class="row">
-                                            <div class="col-md-2 mb-4">
-                                                <label>Username </label>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <input type="text" formControlName="username">
-                                            </div>
+                                        <div class="form-group m-b-40">
+                                            <input type="text" class="form-control" formControlName="email">
+                                            <span class="bar"></span>
+                                            <label>Email </label>
+
                                         </div>
-                                        <div class="row">
-                                            <div class="col-md-2 mb-4">
-                                                <label>Email </label>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <input type="text" formControlName="email">
-                                            </div>
+                                        <div class="form-group m-b-40">
+                                            <input type="text" class="form-control" formControlName="phone">
+                                            <span class="bar"></span>
+                                            <label>Phone Number </label>
+
                                         </div>
-                                        <div class="row">
-                                            <div class="col-md-2 mb-4">
-                                                <label>Phone Number </label>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <input type="text" formControlName="phone">
-                                            </div>
+                                        <div class="form-group m-b-40">
+                                            <input type="text" class="form-control" formControlName="address">
+                                            <span class="bar"></span>
+                                            <label>Address </label>
+
                                         </div>
-                                        <div class="row">
-                                            <div class="col-md-2 mb-4">
-                                                <label>Address </label>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <input type="text" formControlName="address">
-                                            </div>
+                                        <div class="form-group m-b-40">
+                                            <input type="text" class="form-control" formControlName="avatar">
+                                            <span class="bar"></span>
+                                            <label>Avatar</label>
+
                                         </div>
-                                        <div class="row">
-                                            <div class="col-md-2 mb-4">
-                                                <label>Avatar</label>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <input type="text" formControlName="avatar">
-                                            </div>
+                                        <div class="form-group m-b-40">
+                                            <input type="text" class="form-control" formControlName="balance">
+                                            <span class="bar"></span>
+                                            <label>Balance </label>
+
                                         </div>
-                                        <div class="row">
-                                            <div class="col-md-2 mb-4">
-                                                <label>Balance </label>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <input type="text" formControlName="balance">
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-2 mb-4">
-                                                <label>DOB </label>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <input type="date" formControlName="dob">
-                                            </div>
+                                        <div class="form-group m-b-40">
+                                            <input type="date" formControlName="dob">
+                                            <label>DOB </label>
+                                            <span class="bar"></span>
                                         </div>
                                         <button class="btn btn-success">Update</button>
                                     </form>

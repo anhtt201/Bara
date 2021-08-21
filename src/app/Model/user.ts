@@ -1,3 +1,5 @@
+import { Comment } from "./comment";
+
 export class User {
   id: number;
   username: string;
@@ -7,7 +9,7 @@ export class User {
   address: string;
   avatar: string;
   balance: number;
-  dob: Date;
+  dob: String;
   status: boolean;
   roles: string[];
   comments!: Comment[];
@@ -21,7 +23,7 @@ export class User {
     address: string,
     avatar: string,
     balance: number,
-    dob: Date,
+    dob: String,
     status: boolean,
   ) {
     this.id = id;

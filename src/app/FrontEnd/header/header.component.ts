@@ -1,5 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { Catalog } from 'src/app/Model/catalog';
+import { Product } from 'src/app/Model/product';
 import { AuthService } from 'src/app/Service/auth.service';
+import { CatalogService } from 'src/app/Service/catalog.service';
+import { ProductService } from 'src/app/Service/product.service';
 
 @Component({
   selector: 'app-header',
@@ -24,7 +28,23 @@ export class HeaderComponent implements OnInit {
   balance!: string;
   dob!: string;
 
-  constructor(private authService: AuthService) {
+  productList!: Product[];
+  catalogList!: Catalog[];
+
+  baseUrl = 'http://localhost:8080/api/fileManager/downloadFile/';
+
+  filterPro: any[] = [];
+  filterCat: any[] = [];
+
+  filter = {
+    keyword: '',
+  };
+
+  constructor(
+    private authService: AuthService,
+    private productService: ProductService,
+    private catalogService: CatalogService
+  ) {
     this.authService.cartSubject.subscribe((data) => {
       this.cartNumber = data;
     });
@@ -34,17 +54,43 @@ export class HeaderComponent implements OnInit {
     this.authService.totalCart.subscribe((data) => {
       this.totalCart = data;
     });
+    this.productService.getAllProduct().subscribe((data) => {
+      data.forEach((x) => {
+        x.productImgIds = [];
+        x.productImgs = x.productImg.split(';');
+        x.productImgs.forEach((e) => {
+          x.productImgIds.push(parseInt(e.substring(this.baseUrl.length)));
+        });
+      });
+      this.productList = data;
+    });
+    this.catalogService.getAllCatalog().subscribe((data) => {
+      this.catalogList = data;
+    });
   }
 
   ngOnInit(): void {
-    this.username = sessionStorage.getItem('username')!;
-    this.email = sessionStorage.getItem('email')!;
-    this.phone = sessionStorage.getItem('phone')!;
-    this.address = sessionStorage.getItem('address')!;
-    this.avatar = sessionStorage.getItem('avatar')!;
-    this.balance = sessionStorage.getItem('balance')!;
-    this.dob = sessionStorage.getItem('dob')!;
+    if (sessionStorage.getItem('token') != null) {
+      this.username = sessionStorage.getItem('username')!;
+      this.email = sessionStorage.getItem('email')!;
+      this.phone = sessionStorage.getItem('phone')!;
+      this.address = sessionStorage.getItem('address')!;
+      this.avatar = sessionStorage.getItem('avatar')!;
+      this.balance = sessionStorage.getItem('balance')!;
+      this.dob = sessionStorage.getItem('dob')!;
+      console.log(sessionStorage.getItem('token'));
+    } else {
+      this.username = localStorage.getItem('username')!;
+      this.email = localStorage.getItem('email')!;
+      this.phone = localStorage.getItem('phone')!;
+      this.address = localStorage.getItem('address')!;
+      this.avatar = localStorage.getItem('avatar')!;
+      this.balance = localStorage.getItem('balance')!;
+      this.dob = localStorage.getItem('dob')!;
+      console.log(localStorage.getItem('token'));
+    }
     this.loadCart();
+    this.cartNumberFunc();
   }
 
   loadCart() {
@@ -95,5 +141,58 @@ export class HeaderComponent implements OnInit {
 
   isAdmin() {
     return this.authService.isAdmin();
+  }
+
+  searchChange: boolean = false;
+
+  // listProduct() {
+  //   this.productService.getAllProduct().subscribe((data) => {
+  //     this.productList = data;
+  //     this.filterPro = this.filterProduct(this.productList);
+  //   });
+  //   console.log(this.searchChange);
+  // }
+
+  // listCatalog() {
+  //   this.catalogService.getAllCatalog().subscribe((data) => {
+  //     this.catalogList = data;
+  //     this.filterCat = this.filterCatalog(this.catalogList);
+  //   });
+  //   console.log(this.searchChange);
+  // }
+
+  // filterProduct(products: Product[]) {
+  //   return products.filter((product) => {
+  //     return product.productName
+  //       .toLowerCase()
+  //       .includes(this.filter.keyword.toLowerCase());
+  //   });
+  // }
+
+  // filterCatalog(catalogs: Catalog[]) {
+  //   return catalogs.filter((catalog) => {
+  //     return catalog.catalogName
+  //       .toLowerCase()
+  //       .includes(this.filter.keyword.toLowerCase());
+  //   });
+  // }
+
+  listProduct(name: String) {
+    if (name !== '') {
+      this.productService.search(name).subscribe((data) => {
+        this.filterPro = data;
+        console.log(this.filterPro);
+      });
+    }
+  }
+
+  closeSearch() {
+    this.searchChange = false;
+  }
+
+  openSearch() {
+    if (this.filter.keyword != '') {
+      this.searchChange = true;
+    }
   }
 }

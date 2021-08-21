@@ -34,7 +34,7 @@ export class AuthService {
     return this.http.get(this.base_URL + 'checkuseremail/' + email);
   }
 
-  login(user: string, password: string) {
+  loginNoSave(user: string, password: string) {
     // console.log('In AuthService -  login');
     return this.http
       .post<any>(
@@ -64,20 +64,51 @@ export class AuthService {
       );
   }
 
+  loginSave(user: string, password: string) {
+    // console.log('In AuthService -  login');
+    return this.http
+      .post<any>(
+        this.base_URL + 'login',
+        { username: user, password: password },
+        { headers }
+      )
+      .pipe(
+        catchError(this.handleError),
+        map((userData) => {
+          localStorage.setItem('username', user);
+          let tokenStr = 'Bearer ' + userData.token;
+          console.log('Token---  ' + tokenStr);
+          localStorage.setItem('id', userData.id);
+          localStorage.setItem('token', tokenStr);
+          localStorage.setItem('roles', JSON.stringify(userData.roles));
+          localStorage.setItem('email', userData.email);
+          localStorage.setItem('phone', userData.phone);
+          localStorage.setItem('address', userData.address);
+          localStorage.setItem('avatar', userData.avatar);
+          localStorage.setItem('balance', userData.balance);
+          localStorage.setItem('dob', userData.dob);
+          localStorage.setItem('status', userData.status);
+          // console.log(userData);
+          return userData;
+        })
+      );
+  }
+
   logout() {
-    sessionStorage.clear();
+    if(sessionStorage.getItem('token') != null) sessionStorage.clear();
+    if((localStorage.getItem('token') != null)) localStorage.clear()
     this.router.navigate(['/login']);
   }
 
   isAdmin(): boolean {
-    this.userRoles = sessionStorage.getItem('roles')!;
+    this.userRoles = sessionStorage.getItem('roles')! || localStorage.getItem('roles')!;
     if (this.userRoles.includes('ROLE_ADMIN')) {
       return true;
     } else return false;
   }
 
   isLoggedIn(): boolean {
-    return sessionStorage.getItem('username') !== null;
+    return sessionStorage.getItem('username') !== null || localStorage.getItem('username') !== null;
   }
 
   private handleError(httpError: HttpErrorResponse) {

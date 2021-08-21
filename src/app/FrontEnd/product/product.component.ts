@@ -1,7 +1,6 @@
 import { ViewportScroller } from '@angular/common';
-import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Event, Router, Scroll } from '@angular/router';
-import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { Catalog } from 'src/app/Model/catalog';
 import { Color } from 'src/app/Model/color';
@@ -12,6 +11,8 @@ import { ColorService } from 'src/app/Service/color.service';
 import { LazyLoadScriptService } from 'src/app/Service/lazy-load.service';
 import { ProductService } from 'src/app/Service/product.service';
 import { SizeService } from 'src/app/Service/size.service';
+import { ChangeContext, LabelType, Options } from '@angular-slider/ngx-slider';
+import { PaginationInstance } from 'ngx-pagination';
 
 @Component({
   selector: 'app-product',
@@ -19,6 +20,39 @@ import { SizeService } from 'src/app/Service/size.service';
   styleUrls: ['./product.component.css'],
 })
 export class ProductComponent implements OnInit, AfterViewInit {
+  public config1: PaginationInstance = {
+    id: 'custom1',
+    itemsPerPage: 1,
+    currentPage: 1,
+  };
+
+  public config2: PaginationInstance = {
+    id: 'custom2',
+    itemsPerPage: 1,
+    currentPage: 1,
+  };
+
+  changePage: boolean = false;
+
+  minValue: number = 0;
+  maxValue: number = 1000;
+  options: Options = {
+    floor: 0,
+    ceil: 1000,
+    step: 200,
+    showTicks: true,
+    translate: (value: number, label: LabelType): string => {
+      switch (label) {
+        case LabelType.Low:
+          return '<b>Min price:</b> $' + value;
+        case LabelType.High:
+          return '<b>Max price:</b> $' + value;
+        default:
+          return '$' + value;
+      }
+    },
+  };
+
   currentUrl!: String;
 
   productList!: Product[];
@@ -29,6 +63,8 @@ export class ProductComponent implements OnInit, AfterViewInit {
   catalog = '';
   color = '';
   size = '';
+  minMoney!: number;
+  maxMoney!: number;
 
   filterPro: any[] = [];
   filterColor: any[] = [];
@@ -39,6 +75,8 @@ export class ProductComponent implements OnInit, AfterViewInit {
     sortBy: 'Name A - Z',
     cat: '',
   };
+
+  baseUrl = 'http://localhost:8080/api/fileManager/downloadFile/';
 
   constructor(
     private lazyService: LazyLoadScriptService,
@@ -63,7 +101,8 @@ export class ProductComponent implements OnInit, AfterViewInit {
           // forward navigation
           if (
             router.url.includes('/shop?catalog') ||
-            router.url.includes('/shop?color')
+            router.url.includes('/shop?color') ||
+            router.url.includes('/shop?minMoney')
           ) {
             view.scrollToPosition([0, 250]);
           }
@@ -74,16 +113,19 @@ export class ProductComponent implements OnInit, AfterViewInit {
     this.listColor();
     this.listSize();
 
-    this.productService.getAllProduct().subscribe((products) => {
-      this.productList = products;
+    this.productService.getAllProduct().subscribe((data) => {
+      data.forEach((x) => {
+        x.productImgIds = [];
+        x.productImgs = x.productImg.split(';');
+        x.productImgs.forEach((e) => {
+          x.productImgIds.push(parseInt(e.substring(this.baseUrl.length)));
+        });
+      });
+      this.productList = data;
       this.route.queryParamMap.subscribe((params) => {
         this.catalog = params.get('catalog')!;
         this.color = params.get('color')!;
         this.size = params.get('size')!;
-        
-        console.log(this.catalog);
-        console.log(this.color);
-        console.log(this.size);
 
         if (this.catalog === 'All Catalog') {
           this.filterPro = this.productList;
@@ -102,12 +144,10 @@ export class ProductComponent implements OnInit, AfterViewInit {
           this.filterPro.filter((p) => {
             for (let i = 0; i < p.colors.length; i++) {
               if (p.colors[i].colorName === this.color) {
-                console.log(p);
                 tempColor.push(p);
               }
             }
             this.filterPro = tempColor;
-            console.log(tempColor);
           });
         }
 
@@ -115,12 +155,10 @@ export class ProductComponent implements OnInit, AfterViewInit {
           this.filterPro.filter((p) => {
             for (let i = 0; i < p.sizes.length; i++) {
               if (p.sizes[i].sizeName === this.size) {
-                console.log(p);
                 tempSize.push(p);
               }
             }
             this.filterPro = tempSize;
-            console.log(tempSize);
           });
         }
       });
@@ -131,7 +169,9 @@ export class ProductComponent implements OnInit, AfterViewInit {
     this.lazyService.load('assets/js/main.js');
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.lazyService.load('assets/js/main.js');
+  }
 
   listCatalog() {
     this.catalogService.getAllCatalog().subscribe((data) => {
@@ -189,7 +229,31 @@ export class ProductComponent implements OnInit, AfterViewInit {
       });
   }
 
-  hello(evt: any) {
-    console.log(evt.target.value);
+  onUserChange(changeContext: ChangeContext) {
+    this.minMoney = changeContext.value!;
+    this.maxMoney = changeContext.highValue!;
+    this.productService.getAllProduct().subscribe((data) => {
+      data.forEach((x) => {
+        x.productImgIds = [];
+        x.productImgs = x.productImg.split(';');
+        x.productImgs.forEach((e) => {
+          x.productImgIds.push(parseInt(e.substring(this.baseUrl.length)));
+        });
+      });
+      this.productList = data;
+      this.filterPro = this.productList.filter((product) => {
+        return (
+          product.productPriceOut >= this.minMoney &&
+          product.productPriceOut <= this.maxMoney
+        );
+      });
+    });
+  }
+
+  backToPosition() {
+    window.scrollTo({
+      top: 250,
+      behavior: 'smooth',
+    });
   }
 }

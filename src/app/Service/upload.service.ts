@@ -19,7 +19,15 @@ export class UploadService {
     );
   }
 
-  update(file: File, id: String): Observable<UploadFileResponse> {
+  uploads(files:File[]):Observable<UploadFileResponse[]>{
+    const formData: FormData =  new FormData();
+    for(var i = 0; i < files.length; i++){
+      formData.append('files',files[i])
+    }
+    return this.http.post<UploadFileResponse[]>(`${this.baseUrl}/uploads`,formData);
+  }
+
+  update(file: File, id: number): Observable<UploadFileResponse> {
     const formData: FormData = new FormData();
     formData.append('file', file);
     return this.http.put<UploadFileResponse>(
@@ -36,7 +44,7 @@ export class UploadService {
     return this.http.get<UploadFileResponse[]>(`${this.baseUrl}/getAll`);
   }
 
-  delete(id: String) {
+  delete(id: number) {
     return this.http.delete(`${this.baseUrl}/deleteFile/${id}`, {
       responseType: 'text',
     });

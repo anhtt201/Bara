@@ -1,3 +1,7 @@
+html {
+    scroll-behavior: smooth !important;
+}
+
 .form-select {
     width: 70% !important;
 }
@@ -48,4 +52,31 @@
 .size-active {
     background-color: #900 !important;
     color           : #ffffff !important;
+}
+
+.custom-pagination .page-number {
+    display      : inline-block;
+    /* padding   : 5px 12px; */
+    background   : #afffe6;
+    margin       : 0px 4px;
+    border-radius: 25px;
+}
+
+.custom-pagination {
+    align-items    : baseline !important;
+    display        : flex !important;
+    text-align     : center !important;
+    justify-content: center !important;
+}
+
+.custom-pagination span {
+    color        : #999 !important;
+    border-bottom: 1px solid transparent !important;
+    font-size    : 18px !important;
+    margin-right : 10px !important;
+}
+
+.custom-pagination .current span {
+    color        : #000000 !important;
+    border-bottom: 1px solid #1D1D1D !important;
 }

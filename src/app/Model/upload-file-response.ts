@@ -1,5 +1,5 @@
 export class UploadFileResponse {
-  fileId!: String;
+  fileId!: number;
   fileName!: String;
   fileDownloadUri!: String;
   fileType!: String;
