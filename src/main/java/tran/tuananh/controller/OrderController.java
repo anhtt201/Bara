@@ -41,12 +41,10 @@ public class OrderController {
 		return new ResponseEntity<List<Order>>(listOrder, HttpStatus.OK);
 	}
 
-	@PostMapping(value = "/orders")
-	private ResponseEntity<Order> addOrder(@Valid @RequestBody Order order) {
-		order.getOrderDetails().forEach(orderDetails -> orderDetails.setOrder(order));
-		order.setOrderStatus(true);
+	@PostMapping(value = "/orders/{userId}")
+	private ResponseEntity<Order> addOrder(@Valid @RequestBody Order order, @PathVariable("userId") int userId) {
 		if (order.getUser() == null) {
-			order.setUser(userService.getUserById(Integer.valueOf(9)));
+			order.setUser(userService.getUserById(userId));
 		}
 		Order orderAdd = orderService.addOrder(order);
 		return new ResponseEntity<Order>(orderAdd, HttpStatus.OK);
@@ -62,7 +60,7 @@ public class OrderController {
 	private ResponseEntity<Order> updateOrder(@PathVariable("id") int orderId, @RequestBody Order order) {
 		Order orderUpdate = orderService.getOrderById(orderId);
 		orderUpdate.setOrderDetails(order.getOrderDetails());
-		orderUpdate.setOrderAmount(order.getOrderAmount());
+//		orderUpdate.setOrderAmount(order.getOrderAmount());
 		Order updateOrder = orderService.updateOrder(orderId, orderUpdate);
 		return new ResponseEntity<Order>(updateOrder, HttpStatus.OK);
 	}

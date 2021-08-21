@@ -14,6 +14,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "Orders")
 public class Order {
@@ -23,8 +25,8 @@ public class Order {
 	@Column(name = "OrderId")
 	private int orderId;
 
-	@Column(name = "OrderAmount")
-	private int orderAmount;
+//	@Column(name = "OrderAmount")
+//	private int orderAmount;
 
 	@Column(name = "OrderStatus")
 	private boolean orderStatus;
@@ -33,6 +35,7 @@ public class Order {
 	@JoinColumn(name = "id", referencedColumnName = "id")
 	private User user;
 
+	@JsonIgnore
 	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
 	private List<OrderDetails> orderDetails = new ArrayList<OrderDetails>();
 
@@ -41,10 +44,10 @@ public class Order {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Order(int orderId, int orderAmount, boolean orderStatus, User user, List<OrderDetails> orderDetails) {
+	public Order(int orderId, boolean orderStatus, User user, List<OrderDetails> orderDetails) {
 		super();
 		this.orderId = orderId;
-		this.orderAmount = orderAmount;
+//		this.orderAmount = orderAmount;
 		this.orderStatus = orderStatus;
 		this.user = user;
 		this.orderDetails = orderDetails;
@@ -58,13 +61,13 @@ public class Order {
 		this.orderId = orderId;
 	}
 
-	public int getOrderAmount() {
-		return orderAmount;
-	}
-
-	public void setOrderAmount(int orderAmount) {
-		this.orderAmount = orderAmount;
-	}
+//	public int getOrderAmount() {
+//		return orderAmount;
+//	}
+//
+//	public void setOrderAmount(int orderAmount) {
+//		this.orderAmount = orderAmount;
+//	}
 
 	public boolean isOrderStatus() {
 		return orderStatus;

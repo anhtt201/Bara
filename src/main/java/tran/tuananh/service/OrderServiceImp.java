@@ -36,7 +36,7 @@ public class OrderServiceImp implements OrderService {
 	public Order updateOrder(int orderId, Order order) {
 		// TODO Auto-generated method stub
 		Order orderUpdate = orderRepo.findById(orderId).get();
-		orderUpdate.setOrderAmount(order.getOrderAmount());
+//		orderUpdate.setOrderAmount(order.getOrderAmount());
 		orderUpdate.setOrderDetails(order.getOrderDetails());
 		orderUpdate.setOrderStatus(order.isOrderStatus());
 		return orderRepo.save(orderUpdate);
@@ -47,7 +47,6 @@ public class OrderServiceImp implements OrderService {
 		// TODO Auto-generated method stub
 		Order orderDelete = orderRepo.findById(orderId).get();
 		orderRepo.delete(orderDelete);
-		;
 		return "Deleted!";
 	}
 

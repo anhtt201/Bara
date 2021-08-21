@@ -55,11 +55,11 @@ public class Product {
 	@Column(name = "ProductDiscount")
 	private float productDiscount;
 
-	@Column(name = "ProductImage")
+	@Column(name = "ProductImage", columnDefinition = "ntext")
 	private String productImg;
 
-	@Column(name = "ProductImageId")
-	private String productImgId;
+//	@Column(name = "ProductImageId")
+//	private String productImgId;
 
 	@Column(name = "ProductDescription", columnDefinition = "nvarchar(255)")
 	private String productDescription;
@@ -87,9 +87,6 @@ public class Product {
 	@JoinColumn(name = "CatalogId", referencedColumnName = "catalogId")
 	private Catalog catalog;
 
-	@OneToMany(mappedBy = "product")
-	private List<OrderDetails> orderDetails = new ArrayList<OrderDetails>();
-
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "Product_Size", joinColumns = @JoinColumn(name = "Product_Id", referencedColumnName = "productId"), inverseJoinColumns = @JoinColumn(name = "Size_Id", referencedColumnName = "sizeId"))
 	private List<Size> sizes = new ArrayList<Size>();
@@ -112,9 +109,9 @@ public class Product {
 	}
 
 	public Product(int productId, String productName, float productPriceIn, float productPriceOut,
-			float productDiscount, String productImg, String productImgId, String productDescription,
+			float productDiscount, String productImg, String productDescription,
 			String productCreatedDay, int productQuantity, boolean productIsHot, boolean productStatus, Brand brand,
-			Catalog catalog, List<OrderDetails> orderDetails, List<Size> sizes, List<Color> colors,
+			Catalog catalog, List<Size> sizes, List<Color> colors,
 			List<Comment> comments, List<News> news) {
 		super();
 		this.productId = productId;
@@ -123,7 +120,7 @@ public class Product {
 		this.productPriceOut = productPriceOut;
 		this.productDiscount = productDiscount;
 		this.productImg = productImg;
-		this.productImgId = productImgId;
+//		this.productImgId = productImgId;
 		this.productDescription = productDescription;
 		this.productCreatedDay = productCreatedDay;
 		this.productQuantity = productQuantity;
@@ -131,7 +128,6 @@ public class Product {
 		this.productStatus = productStatus;
 		this.brand = brand;
 		this.catalog = catalog;
-		this.orderDetails = orderDetails;
 		this.sizes = sizes;
 		this.colors = colors;
 		this.comments = comments;
@@ -261,15 +257,7 @@ public class Product {
 	public List<Comment> getComments() {
 		return comments;
 	}
-
-	public List<OrderDetails> getOrderDetails() {
-		return orderDetails;
-	}
-
-	public void setOrderDetails(List<OrderDetails> orderDetails) {
-		this.orderDetails = orderDetails;
-	}
-
+	
 	public void setComments(List<Comment> comments) {
 		this.comments = comments;
 	}
@@ -282,12 +270,12 @@ public class Product {
 		this.news = news;
 	}
 
-	public String getProductImgId() {
-		return productImgId;
-	}
-
-	public void setProductImgId(String productImgId) {
-		this.productImgId = productImgId;
-	}
+//	public String getProductImgId() {
+//		return productImgId;
+//	}
+//
+//	public void setProductImgId(String productImgId) {
+//		this.productImgId = productImgId;
+//	}
 
 }

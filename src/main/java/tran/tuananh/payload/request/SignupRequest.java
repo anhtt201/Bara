@@ -35,7 +35,7 @@ public class SignupRequest {
 	private double balance;
 
 	@NotBlank
-	private Date dob;
+	private String dob;
 
 	private boolean status;
 
@@ -95,11 +95,11 @@ public class SignupRequest {
 		this.balance = balance;
 	}
 
-	public Date getDob() {
+	public String getDob() {
 		return dob;
 	}
 
-	public void setDob(Date dob) {
+	public void setDob(String dob) {
 		this.dob = dob;
 	}
 

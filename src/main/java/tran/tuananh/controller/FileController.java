@@ -51,7 +51,7 @@ public class FileController {
 		File dbFile = fileService.storeFile(file);
 
 		String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-				.path("/api/fileManager/downloadFile/").path(dbFile.getId()).toUriString();
+				.path("/api/fileManager/downloadFile/").path(String.valueOf(dbFile.getId())).toUriString();
 
 		return new UploadFileResponse(dbFile.getId(), dbFile.getFileName(), fileDownloadUri, file.getContentType(),
 				file.getSize());
@@ -63,7 +63,7 @@ public class FileController {
 	}
 
 	@PutMapping("/updateFile/{fileId}")
-	public UploadFileResponse updateFile(@RequestParam("file") MultipartFile file, @PathVariable String fileId) {
+	public UploadFileResponse updateFile(@RequestParam("file") MultipartFile file, @PathVariable int fileId) {
 		// Load file from database
 		String fileName = StringUtils.cleanPath(file.getOriginalFilename());
 		try {
@@ -74,7 +74,7 @@ public class FileController {
 			File dbFile = fileService.getFile(fileId);
 
 			String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-					.path("/api/fileManager/downloadFile/").path(fileId).toUriString();
+					.path("/api/fileManager/downloadFile/").path(String.valueOf(fileId)).toUriString();
 
 			dbFile.setFileName(fileName);
 			dbFile.setFileType(file.getContentType());
@@ -92,12 +92,12 @@ public class FileController {
 	}
 
 	@GetMapping("/getFile/{fileId}")
-	public UploadFileResponse getFile(@PathVariable String fileId) {
+	public UploadFileResponse getFile(@PathVariable int fileId) {
 		// Load file from database
 		File dbFile = fileService.getFile(fileId);
 
 		String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-				.path("/api/fileManager/downloadFile/").path(fileId).toUriString();
+				.path("/api/fileManager/downloadFile/").path(String.valueOf(fileId)).toUriString();
 
 		return new UploadFileResponse(dbFile.getId(), dbFile.getFileName(), fileDownloadUri, dbFile.getFileType(),
 				dbFile.getData().length);
@@ -110,7 +110,7 @@ public class FileController {
 	}
 
 	@GetMapping("/downloadFile/{fileId}")
-	public ResponseEntity<Resource> downloadFile(@PathVariable String fileId) {
+	public ResponseEntity<Resource> downloadFile(@PathVariable int fileId) {
 		// Load file from database
 		File dbFile = fileService.getFile(fileId);
 
@@ -120,7 +120,7 @@ public class FileController {
 	}
 
 	@DeleteMapping("/deleteFile/{fileId}")
-	public ResponseEntity<String> deleteFile(@PathVariable String fileId) {
+	public ResponseEntity<String> deleteFile(@PathVariable int fileId) {
 		// Load file from database
 		String res = fileService.deleteFile(fileId);
 		return new ResponseEntity<String>(res, HttpStatus.OK);

@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import tran.tuananh.model.OrderDetails;
 import tran.tuananh.repository.OrderDetailsRepository;
 
@@ -37,6 +36,7 @@ public class OrderDetailsServiceImp implements OrderDetailsService {
 		OrderDetails orderDetailsUpdate = orderDetailsRepo.findById(orderId).get();
 		orderDetailsUpdate.setOrderDetailsQuantity(orderDetails.getOrderDetailsQuantity());
 		orderDetailsUpdate.setProduct(orderDetails.getProduct());
+		orderDetailsUpdate.setOrder(orderDetails.getOrder());
 		return orderDetailsRepo.save(orderDetailsUpdate);
 	}
 

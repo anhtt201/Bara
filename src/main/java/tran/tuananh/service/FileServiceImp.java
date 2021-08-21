@@ -37,14 +37,14 @@ public class FileServiceImp implements FileService {
 	}
 
 	@Override
-	public File getFile(String fileId) {
+	public File getFile(int fileId) {
 		// TODO Auto-generated method stub
 		return fileRepository.findById(fileId)
 				.orElseThrow(() -> new MyFileNotFoundException("File not found with id " + fileId));
 	}
 
 	@Override
-	public String deleteFile(String fileId) {
+	public String deleteFile(int fileId) {
 		// TODO Auto-generated method stub
 		fileRepository.deleteById(fileId);
 		return "Deleted";

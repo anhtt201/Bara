@@ -15,6 +15,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "tom_users", uniqueConstraints = { @UniqueConstraint(columnNames = "username"),
@@ -40,6 +41,7 @@ public class User {
 	@Size(max = 12)
 	private String phone;
 
+	@Column(columnDefinition = "nvarchar(255)")
 	@Size(max = 120)
 	private String address;
 
@@ -48,8 +50,8 @@ public class User {
 
 	private double balance;
 
-	@JsonFormat(pattern = "yyyy-MM-dd")
-	private Date dob;
+
+	private String dob;
 
 	private boolean status;
 
@@ -57,6 +59,7 @@ public class User {
 	@JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
 	private Set<Role> roles = new HashSet<>();
 
+	@JsonIgnore
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
 	private List<Comment> comments = new ArrayList<Comment>();
 
@@ -65,7 +68,7 @@ public class User {
 
 	public User(@NotBlank @Size(max = 20) String username, @NotBlank @Size(max = 50) @Email String email,
 			@NotBlank @Size(max = 120) String password, @Size(max = 12) String phone, @Size(max = 120) String address,
-			@Size(max = 120) String avatar, double balance, Date dob, boolean status) {
+			@Size(max = 120) String avatar, double balance, String dob, boolean status) {
 		this.username = username;
 		this.email = email;
 		this.password = password;
@@ -149,11 +152,11 @@ public class User {
 		this.balance = balance;
 	}
 
-	public Date getDob() {
+	public String getDob() {
 		return dob;
 	}
 
-	public void setDob(Date dob) {
+	public void setDob(String dob) {
 		this.dob = dob;
 	}
 

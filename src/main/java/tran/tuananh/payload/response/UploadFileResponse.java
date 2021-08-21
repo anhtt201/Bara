@@ -2,13 +2,13 @@ package tran.tuananh.payload.response;
 
 public class UploadFileResponse {
 
-	private String fileId;
+	private int fileId;
 	private String fileName;
 	private String fileDownloadUri;
 	private String fileType;
 	private long size;
 
-	public UploadFileResponse(String fileId, String fileName, String fileDownloadUri, String fileType, long size) {
+	public UploadFileResponse(int fileId, String fileName, String fileDownloadUri, String fileType, long size) {
 		this.fileId = fileId;
 		this.fileName = fileName;
 		this.fileDownloadUri = fileDownloadUri;
@@ -54,11 +54,11 @@ public class UploadFileResponse {
 		this.size = size;
 	}
 
-	public String getFileId() {
+	public int getFileId() {
 		return fileId;
 	}
 
-	public void setFileId(String fileId) {
+	public void setFileId(int fileId) {
 		this.fileId = fileId;
 	}
 	

@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import tran.tuananh.model.Catalog;
 import tran.tuananh.model.Product;
+import tran.tuananh.model.User;
 import tran.tuananh.service.CatalogService;
 import tran.tuananh.service.ProductService;
 
@@ -71,6 +72,24 @@ public class ProductController {
 	private ResponseEntity<String> deleteAllProduct() {
 		String res = service.deleteAllProduct();
 		return new ResponseEntity<String>(res, HttpStatus.OK);
+	}
+
+	@GetMapping("/product/search/{productName}")
+	public ResponseEntity<List<Product>> search(@PathVariable("productName") String productName) {
+		List<Product> listPro = service.searchProduct(productName);
+		return new ResponseEntity<List<Product>>(listPro, HttpStatus.OK);
+	}
+
+	@GetMapping("/checkproductname/{name}")
+	public ResponseEntity<Boolean> checkProductName(@PathVariable("name") String name) {
+		Boolean valid = service.checkProductName(name);
+		return new ResponseEntity<Boolean>(valid, HttpStatus.OK);
+	}
+
+	@GetMapping("/checkproductlength/{name}")
+	public ResponseEntity<Boolean> checkProductLength(@PathVariable("name") String name) {
+		Boolean valid = service.checkProductLength(name);
+		return new ResponseEntity<Boolean>(valid, HttpStatus.OK);
 	}
 
 }

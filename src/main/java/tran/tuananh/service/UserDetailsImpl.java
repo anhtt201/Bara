@@ -34,14 +34,14 @@ public class UserDetailsImpl implements UserDetails {
 
 	private double balance;
 
-	private Date dob;
+	private String dob;
 
 	private boolean status;
 
 	private Collection<? extends GrantedAuthority> authorities;
 
 	public UserDetailsImpl(int id, String username, String email, String password, String phone, String address,
-			String avatar, double balance, Date dob, boolean status,
+			String avatar, double balance, String dob, boolean status,
 			Collection<? extends GrantedAuthority> authorities) {
 		super();
 		this.id = id;
@@ -99,7 +99,7 @@ public class UserDetailsImpl implements UserDetails {
 		return balance;
 	}
 
-	public Date getDob() {
+	public String getDob() {
 		return dob;
 	}
 

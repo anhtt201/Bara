@@ -19,4 +19,10 @@ public interface ProductService {
 	public String deleteProduct(int proId);
 
 	public String deleteAllProduct();
+	
+	public List<Product> searchProduct(String productName);
+	
+	public boolean checkProductName(String proName);
+	
+	public boolean checkProductLength(String proName);
 }

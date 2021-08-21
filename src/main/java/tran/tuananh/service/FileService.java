@@ -8,7 +8,7 @@ public interface FileService {
 
 	public File storeFile(MultipartFile file);
 
-	public File getFile(String fileId);
+	public File getFile(int fileId);
 	
-	public String deleteFile(String fileId);
+	public String deleteFile(int fileId);
 }

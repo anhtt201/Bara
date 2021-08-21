@@ -2,6 +2,8 @@ package tran.tuananh.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -62,18 +64,6 @@ public class ProductServiceImp implements ProductService {
 		proUpdate.setBrand(pro.getBrand());
 		proUpdate.setColors(pro.getColors());
 		proUpdate.setSizes(pro.getSizes());
-//		ArrayList<Size> sizeList = new ArrayList<Size>();
-//		for (Size size : pro.getSizes()) {
-//			sizeList.add((new Size(size.getSizeId(), size.getSizeName(), size.isSizeStatus(), proUpdate,
-//					size.getOrderDetails())));
-//		}
-//		proUpdate.setSizes(sizeList);
-//		ArrayList<Color> colorList = new ArrayList<Color>();
-//		for (Color color : pro.getColors()) {
-//			colorList.add((new Color(color.getColorId(), color.getColorName(), color.isColorStatus(), proUpdate,
-//					color.getOrderDetails())));
-//		}
-//		proUpdate.setColors(colorList);
 		return proRepo.save(proUpdate);
 	}
 
@@ -81,11 +71,12 @@ public class ProductServiceImp implements ProductService {
 	public String deleteProduct(int proId) {
 		// TODO Auto-generated method stub
 		Product pro = proRepo.findById(proId).get();
-		for(Comment comment: pro.getComments()) {
+		for (Comment comment : pro.getComments()) {
 			comment.setProduct(null);
 		}
 		pro.setComments(null);
-		if(pro.getCatalog() != null) pro.getCatalog().setProducts(null);
+		if (pro.getCatalog() != null)
+			pro.getCatalog().setProducts(null);
 		pro.setCatalog(null);
 		proRepo.delete(pro);
 		return "Deleted!";
@@ -96,6 +87,30 @@ public class ProductServiceImp implements ProductService {
 		// TODO Auto-generated method stub
 		proRepo.deleteAll();
 		return "Deleted all!";
+	}
+
+	@Override
+	public List<Product> searchProduct(String productName) {
+		// TODO Auto-generated method stub
+		return proRepo.searchProduct(productName);
+	}
+	
+	private static final String NAME_PATTERN = "([A-Z]{1})([a-z0-9 \\p{L}]+)";
+	private static final Pattern pattern = Pattern.compile(NAME_PATTERN, Pattern.UNICODE_CHARACTER_CLASS);
+
+	@Override
+	public boolean checkProductName(String proName) {
+		Matcher matcher = pattern.matcher(proName);
+		return matcher.matches();
+
+	}
+
+	@Override
+	public boolean checkProductLength(String proName) {
+		if (proName.length() >= 6) {
+			return true;
+		}
+		return false;
 	}
 
 }

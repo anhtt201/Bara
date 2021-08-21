@@ -17,12 +17,12 @@ public class JwtResponse {
 	private String address;
 	private String avatar;
 	private double balance;
-	private Date createDay;
+	private String createDay;
 	private boolean status;
 	private List<String> roles;
 
 	public JwtResponse(String token, int id, String username, String email, String phone, String address,
-			String avatar, double balance, Date createDay, boolean status, List<String> roles) {
+			String avatar, double balance, String createDay, boolean status, List<String> roles) {
 		super();
 		this.token = token;
 		this.id = id;
@@ -121,11 +121,11 @@ public class JwtResponse {
 		this.balance = balance;
 	}
 
-	public Date getCreateDay() {
+	public String getCreateDay() {
 		return createDay;
 	}
 
-	public void setCreateDay(Date createDay) {
+	public void setCreateDay(String createDay) {
 		this.createDay = createDay;
 	}
 

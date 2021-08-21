@@ -1,6 +1,8 @@
 package tran.tuananh.model;
 
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -36,12 +38,12 @@ public class Comment {
 	private Date createdDay;
 
 	@Column(name = "CommentRate")
-	private float commentRate;
+	private int[] commentRate;
 
 	@Column(name = "CommentStatus")
 	private boolean commentStatus;
 
-	@JsonIgnore
+//	@JsonIgnore
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "id", referencedColumnName = "id")
 	private User user;
@@ -56,7 +58,7 @@ public class Comment {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Comment(int commentId, String commentContent, Date createdDay, float commentRate, boolean commentStatus,
+	public Comment(int commentId, String commentContent, Date createdDay, int[] commentRate, boolean commentStatus,
 			User user, Product product) {
 		super();
 		this.commentId = commentId;
@@ -92,11 +94,11 @@ public class Comment {
 		this.createdDay = createdDay;
 	}
 
-	public float getCommentRate() {
+	public int[] getCommentRate() {
 		return commentRate;
 	}
 
-	public void setCommentRate(float commentRate) {
+	public void setCommentRate(int[] commentRate) {
 		this.commentRate = commentRate;
 	}
 
