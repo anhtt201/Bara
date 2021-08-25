@@ -727,7 +727,7 @@
                             <tr>
                                 <td>{{catalog.catalogId}}</td>
                                 <td>{{catalog.catalogName}}</td>
-                                <td>{{catalog.catalogDescription}}</td>
+                                <td [(innerHtml)]="catalog.catalogDescription"></td>
                                 <td *ngIf="catalog.catalogIsHot">
                                     <span class="product-badge status-instock">in stock</span>
                                 </td>
@@ -754,16 +754,29 @@
                             <img [src]="catalog.catalogImg" [alt]="catalog.catalogName" class="product-image"
                                 *ngIf="catalog.catalogImg">
                             <div class="p-field">
-                                <label for="name">Catalog Name</label>
-                                <input type="text" pInputText id="name" [(ngModel)]="catalog.catalogName" required
-                                    autofocus />
-                                <small class="p-error" *ngIf="submitted && !catalog.catalogName">Name is
-                                    required.</small>
+                                <label for="name">Catalog Name <span class="required-field">*</span></label>
+                                <input type="text" pInputText id="name" #catalogName="ngModel"
+                                    [(ngModel)]="catalog.catalogName" (change)="checked()" required autofocus />
+                                <div class="alert alert-danger"
+                                    *ngIf="catalogName.errors && (catalogName.dirty || catalogName.touched)">
+                                    <div *ngIf="catalogName.errors.required">
+                                        Tên danh mục không được bỏ trống
+                                    </div>
+                                </div>
                             </div>
                             <div class="p-field">
-                                <label for="description">Description</label>
-                                <textarea id="description" pInputTextarea [(ngModel)]="catalog.catalogDescription"
-                                    required rows="3" cols="20"></textarea>
+                                <label for="description">Description <span class="required-field">*</span></label>
+                                <!-- <textarea id="description" pInputTextarea [(ngModel)]="catalog.catalogDescription"
+                                    required rows="3" cols="20"></textarea> -->
+                                <ckeditor [(ngModel)]="catalog.catalogDescription" id="editor" debounce="500"
+                                    data="<p>Type something here</p>" (change)="checked()"
+                                    #catalogDescription="ngModel"></ckeditor>
+                                <div class="alert alert-danger mt-3"
+                                    *ngIf="catalogDescription.errors && (catalogDescription.dirty || catalogDescription.touched)">
+                                    <div *ngIf="catalogDescription.errors.required">
+                                        Mô tả danh mục không được bỏ trống
+                                    </div>
+                                </div>
                             </div>
                             <div class="p-field">
                                 <ul style="display: flex;">
@@ -795,10 +808,11 @@
                                 </ul>
                             </div>
                             <div class="p-field">
-                                <label for="description">Image Upload</label>
+                                <label for="description">Image Upload <span class="required-field">*</span></label>
                                 <!-- <input type="file" accept="image/*" (change)="selectFile($event)" /> -->
                                 <p-fileUpload chooseLabel="Upload Image" accept="image/*" [maxFileSize]="1000000"
-                                    (onSelect)="selectFile($event)" [showUploadButton]="false" [showCancelButton]="false">
+                                    (onSelect)="selectFile($event)" (change)="checked()" [showUploadButton]="false"
+                                    [showCancelButton]="false">
                                     <ng-template pTemplate="content">
                                         <ul *ngIf="currentFile">
                                             <li>{{currentFile.name}} - {{currentFile.size}} bytes</li>
@@ -809,8 +823,18 @@
                         </ng-template>
 
                         <ng-template pTemplate="footer" class="pt-4">
-                            <i class="ion-close mr-5" (click)="hideDialog()">Cancel</i>
-                            <i class="ion-checkmark" (click)="saveCatalog()">Save</i>
+                            <div style="display: flex; justify-content: flex-end">
+                                <div>
+                                    <button class="btn btn-danger mr-5" (click)="hideDialog()">
+                                        <i class="ion-close"> Cancel</i>
+                                    </button>
+                                </div>
+                                <div [class.disabled]="!isChecked">
+                                    <button [class.disabled]="!isChecked" (click)="saveCatalog()" class="btn btn-info">
+                                        <i class="ion-checkmark"> Save</i>
+                                    </button>
+                                </div>
+                            </div>
                         </ng-template>
                     </p-dialog>
                 </div>

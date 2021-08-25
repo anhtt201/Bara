@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { ErrorHandler, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -12,7 +12,7 @@ import { AppComponent } from './app.component';
 import { HeaderComponent } from './FrontEnd/header/header.component';
 import { FooterComponent } from './FrontEnd/footer/footer.component';
 import { HomeComponent } from './FrontEnd/home/home.component';
-import { NotFoundComponent } from './FrontEnd/not-found/not-found.component';
+import { NotFoundComponent } from './FrontEnd/not-allowed/not-found/not-found.component';
 import { CatalogComponent } from './FrontEnd/catalog/catalog.component';
 import { ProductComponent } from './FrontEnd/product/product.component';
 import { LazyLoadScriptService } from './Service/lazy-load.service';
@@ -53,6 +53,11 @@ import { ProductNameDirective } from './Directive/product-name.directive';
 import { ProductLengthDirective } from './Directive/product-length.directive';
 import { NgxSliderModule } from '@angular-slider/ngx-slider';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { CKEditorModule } from 'ckeditor4-angular';
+import { AuthGuardService } from './Service/auth-guard.service';
+import { AuthService } from './Service/auth.service';
+import { ProductPriceDirective } from './Directive/product-price.directive';
+import { ProductDiscountDirective } from './Directive/product-discount.directive';
 
 @NgModule({
   declarations: [
@@ -84,6 +89,8 @@ import { NgxPaginationModule } from 'ngx-pagination';
     CheckoutComponent,
     ProductNameDirective,
     ProductLengthDirective,
+    ProductPriceDirective,
+    ProductDiscountDirective,
   ],
   imports: [
     CommonModule,
@@ -113,7 +120,8 @@ import { NgxPaginationModule } from 'ngx-pagination';
     DropdownModule,
     NgxStarsModule,
     NgxSliderModule,
-    NgxPaginationModule
+    NgxPaginationModule,
+    CKEditorModule,
   ],
   providers: [
     ToastrService,
@@ -125,6 +133,8 @@ import { NgxPaginationModule } from 'ngx-pagination';
     },
     DatePipe,
     UploadService,
+    AuthService,
+    AuthGuardService,
   ],
   bootstrap: [AppComponent],
 })

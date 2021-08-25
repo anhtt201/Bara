@@ -72,17 +72,19 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
   }
 
   loadCart() {
-    this.data = localStorage.getItem('carts')
-      ? JSON.parse(localStorage.getItem('carts')!)
-      : [];
+    this.data =
+      this.authService.isLoggedIn() && localStorage.getItem('carts')
+        ? JSON.parse(localStorage.getItem('carts')!)
+        : [];
     this.cartNumber = this.data.length;
     console.log(this.data);
   }
 
   cartNumberFunc() {
-    var cartValue = localStorage.getItem('carts')
-      ? JSON.parse(localStorage.getItem('carts')!)
-      : [];
+    var cartValue =
+      this.authService.isLoggedIn() && localStorage.getItem('carts')
+        ? JSON.parse(localStorage.getItem('carts')!)
+        : [];
     this.totalCart = 0;
     cartValue.forEach((element: any) => {
       this.totalCart += element.product.productPriceOut * element.quantity;
@@ -162,5 +164,14 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
       .subscribe((e) => {
         console.log(e);
       });
+  }
+
+  isChecked = false;
+  checked(event: any) {
+    if (event.target.checked) {
+      this.isChecked = true;
+    } else {
+      this.isChecked = false;
+    }
   }
 }

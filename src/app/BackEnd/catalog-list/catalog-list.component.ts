@@ -1,7 +1,5 @@
-import { newArray } from '@angular/compiler/src/util';
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import * as moment from 'moment';
 import { ToastrService } from 'ngx-toastr';
 import { Table } from 'primeng/table';
 import { Catalog } from 'src/app/Model/catalog';
@@ -17,6 +15,7 @@ import { UploadService } from 'src/app/Service/upload.service';
 export class CatalogListComponent implements OnInit, AfterViewInit {
   @ViewChild('dt') table!: Table;
 
+  config: any;
   catalogList!: Catalog[];
   catalogDialog!: boolean;
   catalog!: Catalog;
@@ -41,6 +40,7 @@ export class CatalogListComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
+
     this.cols = [
       { field: 'catalogId', header: '#' },
       { field: 'catalogName', header: 'Name' },
@@ -48,6 +48,7 @@ export class CatalogListComponent implements OnInit, AfterViewInit {
       { field: 'catalogIsHot', header: 'Hot' },
       { field: 'catalogImg', header: 'Image' },
     ];
+    
   }
 
   getAllCatalog() {
@@ -168,5 +169,18 @@ export class CatalogListComponent implements OnInit, AfterViewInit {
       }
     }
     return index;
+  }
+
+  isChecked = false;
+  checked() {
+    if (
+      this.catalog.catalogName &&
+      this.catalog.catalogDescription &&
+      this.uploadedFiles[0]
+    ) {
+      this.isChecked = true;
+    } else {
+      this.isChecked = false;
+    }
   }
 }

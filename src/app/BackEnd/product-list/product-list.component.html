@@ -814,10 +814,10 @@
                                 </li>
                             </ul>
                             <div class="p-field">
-                                <label for="name">Product Name</label>
+                                <label for="name">Product Name <span class="required-field">*</span> </label>
                                 <input type="text" pInputText id="name" [(ngModel)]="product.productName" required
-                                    autofocus #productName="ngModel" appProductName appProductLength />
-                                <div class="alert alert-danger"
+                                    #productName="ngModel" appProductName appProductLength />
+                                <div class="alert alert-danger mt-3"
                                     *ngIf="productName.errors && (productName.dirty || productName.touched)">
                                     <div *ngIf="productName.errors.required">
                                         Product Name is required
@@ -832,54 +832,90 @@
                                 </div>
                             </div>
                             <div class="p-field">
-                                <label for="description">Catalog</label>
+                                <label for="description">Catalog <span class="required-field">*</span> </label>
                                 <p-dropdown [options]="catalogList" [(ngModel)]="selectedCatalog"
                                     placeholder="Select Catalog" optionLabel="catalogName" [showClear]="true">
                                 </p-dropdown>
                             </div>
                             <div class="p-field">
-                                <label for="description">Brand</label>
+                                <label for="description">Brand <span class="required-field">*</span> </label>
                                 <p-dropdown [options]="brandList" [(ngModel)]="selectedBrand" placeholder="Select Brand"
                                     optionLabel="brandName" [showClear]="true">
                                 </p-dropdown>
                             </div>
                             <div class="p-field">
-                                <label for="description">Price In</label>
-                                <p-inputNumber id="price" [(ngModel)]="product.productPriceIn" mode="currency"
-                                    currency="USD" locale="en-US"></p-inputNumber>
+                                <label for="description">Price In <span class="required-field">*</span> </label>
+                                <p-inputNumber id="price" [(ngModel)]="product.productPriceIn" #productPriceIn="ngModel"
+                                    appProductPrice [required]="true">
+                                </p-inputNumber>
+                                <div class="alert alert-danger mt-3"
+                                    *ngIf="productPriceIn.errors && (productPriceIn.dirty || productPriceIn.touched)">
+                                    <div *ngIf="productPriceIn.errors?.required">
+                                        Product Price In is required
+                                    </div>
+                                    <div *ngIf="productPriceIn.errors?.proPrice">
+                                        Product Price In must bigger than 0
+                                    </div>
+                                </div>
                             </div>
                             <div class="p-field">
-                                <label for="description">Price Out</label>
-                                <p-inputNumber id="price" [(ngModel)]="product.productPriceOut" mode="currency"
-                                    currency="USD" locale="en-US"></p-inputNumber>
+                                <label for="description">Price Out <span class="required-field">*</span> </label>
+                                <p-inputNumber id="price" [(ngModel)]="product.productPriceOut"
+                                    #productPriceOut="ngModel" appProductPrice [required]="true">
+                                </p-inputNumber>
+                                <div class="alert alert-danger mt-3"
+                                    *ngIf="productPriceOut.errors && (productPriceOut.dirty || productPriceOut.touched)">
+                                    <div *ngIf="productPriceOut.errors?.required">
+                                        Product Price Out is required
+                                    </div>
+                                    <div *ngIf="productPriceOut.errors?.proPrice">
+                                        Product Price Out must bigger than 0
+                                    </div>
+                                </div>
                             </div>
                             <div class="p-field">
-                                <label for="description">Discount</label>
-                                <p-inputNumber id="price" [(ngModel)]="product.productDiscount" mode="currency"
-                                    currency="USD" locale="en-US"></p-inputNumber>
+                                <label for="description">Discount <span class="required-field">*</span> </label>
+                                <p-inputNumber id="price" [(ngModel)]="product.productDiscount"
+                                    #productDiscount="ngModel" appProductDiscount [required]="true"></p-inputNumber>
+                                <div class="alert alert-danger mt-3"
+                                    *ngIf="productDiscount.errors && (productDiscount.dirty || productDiscount.touched)">
+                                    <div *ngIf="productDiscount.errors?.required">
+                                        Product Discount is required
+                                    </div>
+                                    <div *ngIf="productDiscount.errors?.proDiscount">
+                                        Product Discount must bigger than 0 and smaller than 100
+                                    </div>
+                                </div>
                             </div>
                             <div class="p-field">
-                                <label for="description">Created Day</label>
-                                <p-calendar [ngModel]="date" disabled dateFormat="dd/mm/yy"></p-calendar>
+                                <label for="description">Created Day <span class="required-field">*</span></label>
+                                <p-calendar [ngModel]="date" disabled dateFormat="dd/mm/yy" [required]="true">
+                                </p-calendar>
                             </div>
                             <div class="p-field">
-                                <label for="description">Description</label>
-                                <textarea id="description" pInputTextarea [(ngModel)]="product.productDescription"
-                                    required rows="3" cols="20"></textarea>
+                                <label for="description">Description <span class="required-field">*</span></label>
+                                <ckeditor [(ngModel)]="product.productDescription" id="editor" debounce="500"
+                                    data="<p>Type something here</p>" #productDescription="ngModel"></ckeditor>
+                                <div class="alert alert-danger mt-3"
+                                    *ngIf="productDescription.errors && (productDescription.dirty || productDescription.touched)">
+                                    <div *ngIf="productDescription.errors?.required">
+                                        Product Description is required
+                                    </div>
+                                </div>
                             </div>
                             <div class="p-field">
-                                <label for="description">Quantity</label>
-                                <input type="text" pInputText id="price" [(ngModel)]="product.productQuantity" required
-                                    autofocus mode="currency" currency="USD" locale="en-US" />
+                                <label for="description">Quantity <span class="required-field">*</span></label>
+                                <input type="text" pInputText id="price" [(ngModel)]="product.productQuantity"
+                                    required />
                             </div>
                             <div class="p-field">
-                                <label for="description">Colors</label>
+                                <label for="description">Colors <span class="required-field">*</span></label>
                                 <p-multiSelect [options]="colorList" [(ngModel)]="selectedColors"
                                     defaultLabel="Select Colors" optionLabel="colorName"
                                     selectedItemsLabel="{0} items selected"></p-multiSelect>
                             </div>
                             <div class="p-field">
-                                <label for="description">Sizes</label>
+                                <label for="description">Sizes <span class="required-field">*</span></label>
                                 <p-multiSelect [options]="sizeList" [(ngModel)]="selectedSizes"
                                     defaultLabel="Select Sizes" optionLabel="sizeName"
                                     selectedItemsLabel="{0} items selected"></p-multiSelect>
@@ -887,7 +923,7 @@
                             <div class="p-field">
                                 <ul style="display: flex;">
                                     <li style="width: 150px;" class="mr-5">
-                                        <label for="description">Product Is Hot</label>
+                                        <label for="description">Product Is Hot </label>
                                     </li>
                                     <li>
                                         <p-checkbox name="Is Hot" [binary]="true" [(ngModel)]="product.productIsHot">
@@ -896,7 +932,7 @@
                                 </ul>
                                 <ul style="display: flex;">
                                     <li style="width: 150px;" class="mr-5">
-                                        <label for="description">Product Status</label>
+                                        <label for="description">Product Status </label>
                                     </li>
                                     <li>
                                         <p-checkbox name="Is Hot" [binary]="true" [(ngModel)]="product.productStatus">
@@ -905,7 +941,7 @@
                                 </ul>
                             </div>
                             <div class="p-field">
-                                <label for="description">Image Upload</label>
+                                <label for="description">Image Upload <span class="required-field">*</span></label>
                                 <!-- <input type="file" accept="image/*" (change)="selectFile($event)" /> -->
                                 <p-fileUpload chooseLabel="Upload Image" accept="image/*" [maxFileSize]="1000000"
                                     (onSelect)="selectFile($event)" [showUploadButton]="false"
@@ -920,14 +956,18 @@
                         </ng-template>
 
                         <ng-template pTemplate="footer" class="pt-4">
-                            <!-- <p-button class="ion-close mr-5" (click)="hideProduct()">Cancel</p-button>
-                            <p-button class="ion-checkmark" (click)="saveProduct()">Save</p-button> -->
-
-
-                            <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text"
-                                (click)="hideProduct()"></button>
-                            <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text"
-                                (click)="(isValid()) ? saveProduct() : false"></button>
+                            <div style="display: flex; justify-content: flex-end">
+                                <div>
+                                    <button class="btn btn-danger mr-5" (click)="hideProduct()">
+                                        <i class="ion-close"> Cancel</i>
+                                    </button>
+                                </div>
+                                <div [class.disabled]="!isValid()">
+                                    <button [class.disabled]="!isValid()" (click)="saveProduct()" class="btn btn-info">
+                                        <i class="ion-checkmark"> Save</i>
+                                    </button>
+                                </div>
+                            </div>
                         </ng-template>
                     </p-dialog>
                 </div>

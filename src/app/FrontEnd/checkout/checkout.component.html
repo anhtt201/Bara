@@ -340,12 +340,12 @@
                                 </div>
                             </div>
                             <div class="order-conditions checkout-checkbox-style">
-                                <input type="checkbox">
+                                <input (change)="checked($event)" type="checkbox">
                                 <p>I’ve read and accept the <a href="#">terms & conditions *</a></p>
                                 <span class="checkmark"></span>
                             </div>
-                            <div class="Place-order">
-                                <a (click)="buyItem()">Place Order</a>
+                            <div [class.disabled]="!isChecked" class="Place-order">
+                                <a [class.disabled]="!isChecked" (click)="buyItem()">Place Order</a>
                             </div>
                         </div>
                     </div>

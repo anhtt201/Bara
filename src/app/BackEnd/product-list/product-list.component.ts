@@ -1,5 +1,6 @@
 import {
   AfterViewInit,
+  ChangeDetectorRef,
   Component,
   OnDestroy,
   OnInit,
@@ -63,13 +64,14 @@ export class ProductListComponent implements OnInit, AfterViewInit {
     private sizeService: SizeService,
     private router: Router,
     private fileService: UploadService,
-    private toastrService: ToastrService
+    private toastrService: ToastrService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngAfterViewInit() {
     this.lazyService.load('assets/js/plugins/sidebarmenu.js');
     this.lazyService.load('assets/js/custom.min.js');
-
+    this.cdr.detectChanges();
     this.getAll();
   }
 
@@ -358,7 +360,6 @@ export class ProductListComponent implements OnInit, AfterViewInit {
         this.proService.checkProductLength(this.product.productName)
       )
     ) {
-      this.toastrService.error('Something wrong! Please Try Again', 'Failed!');
       return false;
     }
     return true;

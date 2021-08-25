@@ -94,9 +94,10 @@ export class HeaderComponent implements OnInit {
   }
 
   loadCart() {
-    this.data = localStorage.getItem('carts')
-      ? JSON.parse(localStorage.getItem('carts')!)
-      : [];
+    this.data =
+      this.authService.isLoggedIn() && localStorage.getItem('carts')
+        ? JSON.parse(localStorage.getItem('carts')!)
+        : [];
     this.cartNumber = this.data.length;
     console.log(this.data);
   }
@@ -111,9 +112,10 @@ export class HeaderComponent implements OnInit {
   }
 
   cartNumberFunc() {
-    var cartValue = localStorage.getItem('carts')
-      ? JSON.parse(localStorage.getItem('carts')!)
-      : [];
+    var cartValue =
+      this.authService.isLoggedIn() && localStorage.getItem('carts')
+        ? JSON.parse(localStorage.getItem('carts')!)
+        : [];
     this.totalCart = 0;
     cartValue.forEach((element: any) => {
       this.totalCart += element.product.productPriceOut * element.quantity;
@@ -132,6 +134,13 @@ export class HeaderComponent implements OnInit {
   }
 
   isLogOut() {
+    this.data = [];
+    this.totalCart = 0;
+    this.cartItem = [];
+    this.cartNumber = 0;
+    this.authService.cartSubject.next(this.cartNumber);
+    this.authService.cartItem.next(this.cartItem);
+    this.authService.totalCart.next(this.totalCart);
     this.authService.logout();
   }
 

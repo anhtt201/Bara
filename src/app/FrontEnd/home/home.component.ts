@@ -49,7 +49,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
         x.productImgIds = [];
         x.productImgs = x.productImg.split(';');
         x.productImgs.forEach((e) => {
-          console.log(e.substring(this.baseUrl.length));
+          // console.log(e.substring(this.baseUrl.length));
           x.productImgIds.push(parseInt(e.substring(this.baseUrl.length)));
         });
       });

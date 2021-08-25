@@ -57,3 +57,11 @@ p-dialog textarea {
     background: #ffcdd2 !important;
     color     : #c63737 !important;
 }
+
+div.disabled {
+    cursor: not-allowed;
+}
+
+button.disabled {
+    pointer-events: none;
+}

@@ -59,3 +59,15 @@ p-dialog p-inputNumber {
     background: #ffcdd2 !important;
     color     : #c63737 !important;
 }
+
+.required-field {
+    color: red
+}
+
+div.disabled {
+    cursor: not-allowed;
+}
+
+button.disabled {
+    pointer-events: none;
+}

@@ -102,6 +102,8 @@ export class LoginComponent implements OnInit {
             this.isLogin = true;
             this.id = data.id;
             console.log(this.id);
+            this.loadCart();
+            this.cartNumberFunc();
             this.router.navigate(['/home']);
           },
           (error) => {
@@ -113,15 +115,14 @@ export class LoginComponent implements OnInit {
         );
     } else {
       this.authService
-        .loginSave(
-          this.loginForm.value.username,
-          this.loginForm.value.password
-        )
+        .loginSave(this.loginForm.value.username, this.loginForm.value.password)
         .subscribe(
           (data) => {
             this.isLogin = true;
             this.id = data.id;
             console.log(this.id);
+            this.loadCart();
+            this.cartNumberFunc();
             this.router.navigate(['/home']);
           },
           (error) => {
@@ -135,7 +136,7 @@ export class LoginComponent implements OnInit {
   }
 
   updateUser() {
-    if (!this.rememberMe){
+    if (!this.rememberMe) {
       this.sesionGet();
     } else {
       this.localGet();
@@ -156,7 +157,7 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  sesionGet(){
+  sesionGet() {
     let user = this.frmUserUp.value;
     this.authService.updateUser(user.id, user).subscribe((data) => {
       console.log(data);
@@ -175,7 +176,7 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  localGet(){
+  localGet() {
     let user = this.frmUserUp.value;
     this.authService.updateUser(user.id, user).subscribe((data) => {
       console.log(data);
@@ -192,5 +193,36 @@ export class LoginComponent implements OnInit {
       this.initLoginForm();
       window.location.reload();
     });
+  }
+
+  data: any[] = [];
+  cartNumber: number = 0;
+  totalCart: number = 0;
+  cartItem: any[] = [];
+
+  loadCart() {
+    this.data =
+      this.authService.isLoggedIn() && localStorage.getItem('carts')
+        ? JSON.parse(localStorage.getItem('carts')!)
+        : [];
+    this.cartNumber = this.data.length;
+    console.log(this.data);
+  }
+
+  cartNumberFunc() {
+    var cartValue =
+      this.authService.isLoggedIn() && localStorage.getItem('carts')
+        ? JSON.parse(localStorage.getItem('carts')!)
+        : [];
+    this.totalCart = 0;
+    cartValue.forEach((element: any) => {
+      this.totalCart += element.product.productPriceOut * element.quantity;
+    });
+    this.cartItem = cartValue;
+    this.cartNumber = cartValue.length;
+    this.authService.cartSubject.next(this.cartNumber);
+    this.authService.cartItem.next(this.cartItem);
+    this.authService.totalCart.next(this.totalCart);
+    console.log(this.cartNumber);
   }
 }

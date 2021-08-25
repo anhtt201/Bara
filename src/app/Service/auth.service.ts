@@ -95,20 +95,24 @@ export class AuthService {
   }
 
   logout() {
-    if(sessionStorage.getItem('token') != null) sessionStorage.clear();
-    if((localStorage.getItem('token') != null)) localStorage.clear()
+    if (sessionStorage.getItem('token') != null) sessionStorage.clear();
+    if (localStorage.getItem('token') != null) localStorage.clear();
     this.router.navigate(['/login']);
   }
 
   isAdmin(): boolean {
-    this.userRoles = sessionStorage.getItem('roles')! || localStorage.getItem('roles')!;
-    if (this.userRoles.includes('ROLE_ADMIN')) {
+    this.userRoles =
+      sessionStorage.getItem('roles')! || localStorage.getItem('roles')!;
+    if (this.userRoles != null && this.userRoles.includes('ROLE_ADMIN')) {
       return true;
     } else return false;
   }
 
   isLoggedIn(): boolean {
-    return sessionStorage.getItem('username') !== null || localStorage.getItem('username') !== null;
+    return (
+      sessionStorage.getItem('username') !== null ||
+      localStorage.getItem('username') !== null
+    );
   }
 
   private handleError(httpError: HttpErrorResponse) {
@@ -138,6 +142,20 @@ export class AuthService {
     return this.http.put<User>(`${this.base_URL}signup/${id}`, user);
   }
 
+  public isExpired(): boolean {
+    if (localStorage.getItem('token')) {
+      return true;
+    } else {
+      const token = sessionStorage.getItem('token');
+      const expiredTime = new Date().getTime() + 300000;
+      console.log(new Date().getTime());
+      return Math.floor(new Date().getTime()) >= expiredTime;
+    }
+  }
+
+  isAuthenticated(): boolean {
+    return this.isAdmin();
+  }
   cartSubject = new Subject<any>();
 
   cartItem = new Subject<any>();

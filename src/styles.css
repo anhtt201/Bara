@@ -3,6 +3,10 @@
     z-index: 1 !important;
 }
 
+.required-field {
+    color: red
+}
+
 @import '~primeicons/primeicons.css';
 @import '~primeng/resources/themes/nova-light/theme.css';
 @import '~primeng/resources/primeng.min.css';
